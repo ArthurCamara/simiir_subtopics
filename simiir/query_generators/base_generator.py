@@ -102,7 +102,7 @@ class BaseQueryGenerator(object):
         """
         Returns the next query - if one that hasn't been issued before is present.
         """
-        if self._query_list is None:
+        if self._query_list is None or len(self._query_list) == 0:
             self._query_list = self.generate_query_list(search_context)
 
         # If query_limit is a positive integer, a query limit is enforced. So check the length.
@@ -120,12 +120,15 @@ class BaseQueryGenerator(object):
 
             # Allow similar queries to be issued (perhaps for mirroring real-world users)
             if self.__allow_similar and not self._has_query_been_issued(issued_query_list, candidate_query):
+                # Remove query from list
+                self._query_list = self._query_list[1:]
                 return candidate_query
 
             # Otherwise, we are generating queries synthetically so we disallow this.
             if not self._has_query_been_issued(issued_query_list, candidate_query):
                 if not self._had_similar_query_been_issued(issued_query_list, candidate_query):
                     # This query has not been issued before, so say it's the next one to issue!
+                    self._query_list = self._query_list[1:]
                     return candidate_query
 
         return None

@@ -25,13 +25,12 @@ class SubtopicLMGenerator(BaseQueryGenerator):
         Otherwise, use QS3 to generate a list of queries."""
         # If it's a new subtopic, a single query is returned.
         if search_context._new_subtopic:
+            search_context._new_subtopic = False
             return [[search_context.topic.title + " " + search_context._last_subtopic]]
         return self._generate_query_list_single_subtopic(search_context, search_context._last_subtopic)
 
     def update_model(self, search_context):
         """Update background and subtopic language model after a query"""
-        if not self.updating:
-            return False
         snippet_text = self._get_snip_text(search_context)
         snippet_text = self._check_terms(snippet_text)
 
@@ -46,8 +45,7 @@ class SubtopicLMGenerator(BaseQueryGenerator):
                 all_text, self._stopword_file)
             language_model = LanguageModel(term_dict=term_counts)
 
-            self.topic_lang_model = language_model
-            if self.background_language_model:
+            if self.topic_lang_model:
 
                 smoothed_subtopic_language_model = SmoothedLanguageModel(
                     language_model, self.subtopics_language_models[subtopic_text])
@@ -60,7 +58,10 @@ class SubtopicLMGenerator(BaseQueryGenerator):
                 self.subtopics_language_models[subtopic_text] = smoothed_subtopic_language_model
 
                 return True
-            return False
+        # Even without the snippet, if the subtopic LM doesn't exist, we can initialize it with the background data.
+        _ = self._generate_topic_language_model(
+            search_context, search_context.get_subtopic())
+        return False
 
     def _get_snip_text(self, search_context):
         document_list = search_context.get_all_examined_snippets()

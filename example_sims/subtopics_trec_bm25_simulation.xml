@@ -7,7 +7,7 @@ Date:   2021-08-31
 
 <simulationConfiguration id="subtopics_bm25_sim">
 	
-	<output baseDirectory="../example_sims/output/"
+    <output baseDirectory="/ssd2/arthur/simmir_py2/simiir/example_sims/output/"
 			saveInteractionLog="true"
 			saveRelevanceJudgments="true"
 			trec_eval="true" />
@@ -20,7 +20,7 @@ Date:   2021-08-31
  	</topics>
 	
 	<users>
-        <user configurationFile="../example_sims/users/perfect_trec_user_subtopics.xml" />
+        <user configurationFile="../example_sims/users/smart_subtopics_user.xml" />
 	</users>
 	
 	<searchInterface class="WhooshSearchInterface">

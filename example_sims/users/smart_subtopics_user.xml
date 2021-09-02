@@ -5,20 +5,24 @@
 	</queryGenerator>
 
 	<textClassifiers>
-		<snippetClassifier class="InformedTrecTextClassifier">
+		<snippetClassifier class="StochasticInformedTrecTextClassifier">
             <attribute name="qrel_file" type="string" value="../example_data/qrels/trec2005.qrels.all" is_argument="true" />
-			<attribute name="data_handler" type="integer" value="0" is_argument="false" />
-		</snippetClassifier>
+            <attribute name="data_handler" type="integer" value="0" is_argument="false" /> 
+            <attribute name="rprob" type="float" value="0.75" is_argument="true" />
+            <attribute name="nprob" type="float" value="0.35" is_argument="true" />
+        </snippetClassifier>
 
-		<documentClassifier class="InformedTrecTextClassifier">
-	        <attribute name="qrel_file" type="string" value="../example_data/qrels/trec2005.qrels.all" is_argument="true" />
-			<attribute name="data_handler" type="integer" value="0" is_argument="false" />
-		</documentClassifier>
-	</textClassifiers>
+        <documentClassifier class="StochasticInformedTrecTextClassifier">
+            <attribute name="qrel_file" type="string" value="../example_data/qrels/trec2005.qrels.all"             is_argument="true" />
+           <attribute name="rprob" type="float" value="0.85" is_argument="true" />
+           <attribute name="nprob" type="float" value="0.25" is_argument="true" />
+           <attribute name="data_handler" type="integer" value="0" is_argument="false" />
+        </documentClassifier>
+    </textClassifiers>
 
-	<stoppingDecisionMaker class="FixedDepthDecisionMaker">
-        <attribute name="depth" type="integer" value="1000" is_argument="true" />
-	</stoppingDecisionMaker>
+     <stoppingDecisionMaker class="SequentialNonrelDecisionMakerSkip">
+         <attribute name="nonrelevant_threshold" type="integer" value="3" is_argument="true" />
+     </stoppingDecisionMaker>
 
     <subtopicDecisionMaker class="RandomSubtopicPicker">
         <attribute name="seed" type="integer" value="42" is_argument="true" />

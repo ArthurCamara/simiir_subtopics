@@ -21,7 +21,6 @@ class SimulatedUser(object):
         self.__action_value = None
 
     # TODO: add subtopic exploration
-    # TODO: How the subtopic picking proccess influiences with the quering processs?
     def decide_action(self):
         """
         This method is central to the whole simulation - it decides which action the user should perform next.
@@ -124,6 +123,8 @@ class SimulatedUser(object):
         This works by calling the search context for the next subtopic text, which in turns impacts on the user query
             behaviour, by influencing its LM
         """
+        # Update language models from query generator
+        self.__query_generator.update_model(self.__search_context)
         # Get a new subtopic
         new_subtopic = self.__subtopic_picker.pick()
 
