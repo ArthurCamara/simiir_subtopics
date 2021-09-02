@@ -1,0 +1,26 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "run_simiir",
+            "type": "python",
+            "request": "launch",
+            "cwd": "/ssd2/arthur/simmir_py2/simiir/simiir",
+            "console": "integratedTerminal",
+            "program": "run_simiir.py",
+            "args": [
+                "../example_sims/subtopics_trec_bm25_simulation.xml"
+            ]
+        }
+    ]
+}

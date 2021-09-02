@@ -1,0 +1,37 @@
+<!--
+Simulation Configuration DTD
+
+Authors: Leif Azzopardi & David Maxwell & Arthur Camara
+Date:   2021-08-31
+-->
+
+<simulationConfiguration id="subtopics_bm25_sim">
+	
+	<output baseDirectory="../example_sims/output/"
+			saveInteractionLog="true"
+			saveRelevanceJudgments="true"
+			trec_eval="true" />
+	
+	<topics>
+        <!--
+        These are the topics that each simulated user will complete
+        -->
+        <topic id="367" filename="../example_data/topics/topic.367" qrelsFilename="../example_data/qrels/trec2005.qrels" subtopicsFilename="../example_data/subtopics/subtopics.367"/>
+ 	</topics>
+	
+	<users>
+        <user configurationFile="../example_sims/users/perfect_trec_user_subtopics.xml" />
+	</users>
+	
+	<searchInterface class="WhooshSearchInterface">
+        <!--
+        This is the search interface that the simulated users will interact with
+        -->
+		<attribute name="whoosh_index_dir" type="string" value="../example_data/index" is_argument="true" />
+        <attribute name="implicit_or" type="boolean" value="1" is_argument="true" />
+         <!-- 0 - TFIDF, 1 - BM25, 2 - PL2 -->
+        <attribute name="model" type="integer" value="1" is_argument="true" />
+	</searchInterface>
+	
+</simulationConfiguration>
+
