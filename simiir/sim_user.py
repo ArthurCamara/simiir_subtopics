@@ -45,6 +45,7 @@ class SimulatedUser(object):
         This method returns None.
         """
         def after_subtopic():
+            # TODO: Stopping condition for Subtopics!
             self.__do_action(Actions.QUERY)
 
         def after_query():
@@ -123,8 +124,6 @@ class SimulatedUser(object):
         This works by calling the search context for the next subtopic text, which in turns impacts on the user query
             behaviour, by influencing its LM
         """
-        # Update language models from query generator
-        self.__query_generator.update_model(self.__search_context)
         # Get a new subtopic
         new_subtopic = self.__subtopic_picker.pick()
 
@@ -152,8 +151,7 @@ class SimulatedUser(object):
         self.__query_generator.update_model(self.__search_context)
 
         # Get a query from the generator.
-        query_text = self.__query_generator.get_next_query(
-            self.__search_context)
+        query_text = self.__query_generator.get_next_query(self.__search_context)
 
         if query_text:
             # Can also supply page number and page lengths here.
@@ -203,8 +201,7 @@ class SimulatedUser(object):
 
         if self.__search_context.get_document_observation_count(snippet) > 0:
             # This document has been previously seen; so we ignore it. But the higher the count, cumulated credibility could force us to examine it?
-            self.__logger.log_action(
-                Actions.SNIPPET, status="SEEN_PREVIOUSLY", snippet=snippet)
+            self.__logger.log_action(Actions.SNIPPET, status="SEEN_PREVIOUSLY", snippet=snippet)
 
         else:
             # This snippet has not been previously seen; check quality of snippet. Does it show some form of relevance?
@@ -214,13 +211,11 @@ class SimulatedUser(object):
 
             if self.__snippet_classifier.is_relevant(snippet):
                 snippet.judgment = 1
-                self.__logger.log_action(
-                    Actions.SNIPPET, status="SNIPPET_RELEVANT", snippet=snippet)
+                self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_RELEVANT", snippet=snippet)
                 judgment = True
             else:
                 snippet.judgment = 0
-                self.__logger.log_action(
-                    Actions.SNIPPET, status="SNIPPET_NOT_RELEVANT", snippet=snippet)
+                self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_NOT_RELEVANT", snippet=snippet)
 
             self.__snippet_classifier.update_model(self.__search_context)
         return judgment

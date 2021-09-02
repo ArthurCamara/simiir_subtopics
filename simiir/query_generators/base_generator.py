@@ -59,8 +59,7 @@ class BaseQueryGenerator(object):
 
         topic_lang_model = self._generate_topic_language_model(search_context)
 
-        bi_query_generator = BiTermQueryGeneration(
-            minlen=3, stopwordfile=self._stopword_file)
+        bi_query_generator = BiTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
 
         bi_query_list = bi_query_generator.extract_queries_from_text(
             topic_text)
