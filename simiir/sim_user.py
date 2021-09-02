@@ -21,7 +21,7 @@ class SimulatedUser(object):
         self.__action_value = None
 
     # TODO: add subtopic exploration
-    # TODO: How the subtopic picking proccess influiences with the quering proceszs?
+    # TODO: How the subtopic picking proccess influiences with the quering processs?
     def decide_action(self):
         """
         This method is central to the whole simulation - it decides which action the user should perform next.
@@ -84,6 +84,7 @@ class SimulatedUser(object):
             self.__do_action(Actions.SUBTOPIC)
 
         last_to_next_action_mapping = {
+            Actions.SUBTOPIC: after_subtopic,
             Actions.QUERY: after_query,
             Actions.SERP: after_serp,
             Actions.SNIPPET: after_snippet,
@@ -101,6 +102,7 @@ class SimulatedUser(object):
         This method returns None.
         """
         action_mapping = {
+            Actions.SUBTOPIC: self.__do_subtopic,
             Actions.QUERY: self.__do_query,
             Actions.SERP: self.__do_serp,
             Actions.SNIPPET: self.__do_snippet,
@@ -110,16 +112,40 @@ class SimulatedUser(object):
 
         # Update the search context to reflect the most recent action.
         # Logging takes place within each method called (e.g. __do_query()) to reflect different values being passed.
+        # This method prepares whatevert is nedded BEFORE calling the actual step.
         self.__search_context.set_action(action)
 
         # Now call the appropriate method to perform the action.
         self.__action_value = action_mapping[action]()
 
+    def __do_subtopic(self):
+        """
+        Called when the simulated user wants to pick another subtopic.
+        This works by calling the search context for the next subtopic text, which in turns impacts on the user query
+            behaviour, by influencing its LM
+        """
+        # Get a new subtopic
+        new_subtopic = self.__subtopic_picker.pick()
+
+        # Set next query to be the title of the subtopic
+        if new_subtopic not in self.__search_context._used_subtopics:
+            self.__search_context._new_subtopic = True
+        else:
+            self.__search_context._new_subtopic = False
+
+        # If the user changed the subtopic, keep track of it.
+        if new_subtopic != self.__search_context._last_subtopic:
+            self.__search_context._picked_subtopics.append(new_subtopic)
+            self.__search_context._used_subtopics.add(new_subtopic)
+        self.__search_context._last_subtopic = new_subtopic
+
     def __do_query(self):
         """
         Called when the simulated user wishes to issue another query.
-        This works by calling the search context for the subsequent query text, and is then issued to the search interface by the search context on behalf of the user.
-        If no further queries are available, the logger is told of this - and the simulation will then stop at the next iteration.
+        This works by calling the search context for the subsequent query text, and is then issued to the search
+            interface by the search context on behalf of the user.
+        If no further queries are available, the logger is told of this - and the simulation will then stop 
+            at the next iteration.
         """
         # update the query generator with the latest search context.
         self.__query_generator.update_model(self.__search_context)
@@ -130,6 +156,7 @@ class SimulatedUser(object):
 
         if query_text:
             # Can also supply page number and page lengths here.
+            # This is where the query is ACTUALLY issued.
             self.__search_context.add_issued_query(query_text)
             self.__logger.log_action(Actions.QUERY, query=query_text)
             self.__output_controller.log_query(query_text)
@@ -182,7 +209,7 @@ class SimulatedUser(object):
             # This snippet has not been previously seen; check quality of snippet. Does it show some form of relevance?
             # If so, we return True - and if not, we return False, which moves the simulator to the next step.
 
-            #print 'snippet', snippet.doc_id, self.__snippet_classifier.is_relevant(snippet)
+            # print 'snippet', snippet.doc_id, self.__snippet_classifier.is_relevant(snippet)
 
             if self.__snippet_classifier.is_relevant(snippet):
                 snippet.judgment = 1
@@ -207,17 +234,17 @@ class SimulatedUser(object):
             self.__logger.log_action(
                 Actions.DOC, status="EXAMINING_DOCUMENT", doc_id=document.doc_id)
 
-            #print 'document', document.doc_id, self.__document_classifier.is_relevant(document)
+            # print 'document', document.doc_id, self.__document_classifier.is_relevant(document)
 
             if self.__document_classifier.is_relevant(document):
                 document.judgment = 1
-                #self.__logger.log_action(Actions.MARK, status="CONSIDERED_RELEVANT", doc_id=document.doc_id)
+                # self.__logger.log_action(Actions.MARK, status="CONSIDERED_RELEVANT", doc_id=document.doc_id)
                 self.__search_context.add_relevant_document(document)
                 judgment = True
             else:
                 document.judgment = 0
                 self.__search_context.add_irrelevant_document(document)
-                #self.__logger.log_action(Actions.MARK, status="CONSIDERED_NOT_RELEVANT", doc_id=document.doc_id)
+                # self.__logger.log_action(Actions.MARK, status="CONSIDERED_NOT_RELEVANT", doc_id=document.doc_id)
                 judgment = False
 
             self.__document_classifier.update_model(self.__search_context)
@@ -236,7 +263,6 @@ class SimulatedUser(object):
         self.__logger.log_action(
             Actions.MARK, status=judgement_message[document.judgment], doc_id=document.doc_id)
 
-        #self.__logger.log_action(Actions.MARK, doc_id=document.doc_id)
         return True
 
     def __do_decide(self):
@@ -253,5 +279,5 @@ class SimulatedUser(object):
             self.__output_controller.log_info(info_type="SERP_END_REACHED")
             return Actions.SUBTOPIC
 
-        # TODO: addapt decision maker to pick subtopic isntead of query
+        # TODO: adapt decision maker to pick subtopic instead of query
         return self.__decision_maker.decide()
