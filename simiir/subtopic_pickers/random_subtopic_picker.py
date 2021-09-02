@@ -12,5 +12,5 @@ class RandomSubtopicPicker(BaseSubtopicPicker):
         random.seed(self.seed)
 
     def pick(self):
-        # FIX THIS TO ACTUALLY WORK. I'm not sure where the subtopics are in the search context.
+        """Randomly picks one subtopic"""
         return random.choice(self._search_context.topic.subtopics)

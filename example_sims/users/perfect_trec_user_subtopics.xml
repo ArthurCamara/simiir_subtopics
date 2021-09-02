@@ -1,7 +1,7 @@
 <userConfiguration id="perfect_trec_user_subtopics">
 
-	<queryGenerator class="TrecTopicQueryGenerator">
-		<attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />
+	<queryGenerator class="SubtopicLMGenerator">
+        <attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />
 	</queryGenerator>
 
 	<textClassifiers>

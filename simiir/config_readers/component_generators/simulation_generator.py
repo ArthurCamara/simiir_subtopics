@@ -25,6 +25,7 @@ class SimulationComponentGenerator(BaseComponentGenerator):
 
         # Generate a Topic object.
         self.topic = self.__generate_topic()
+        self.subtopics = self.topic.subtopics
 
         # Generate the search interface to be used.
         self.search_interface = self._get_object_reference(config_details=self._config_dict['searchInterface'],
@@ -35,7 +36,8 @@ class SimulationComponentGenerator(BaseComponentGenerator):
         self.user = UserConfigReader(
             user_config_file).get_component_generator(self)
 
-        # Creates a "base ID" for the saving of files, comprised of different component IDs (to uniquely identify the simulation).
+        # Creates a "base ID" for the saving of files, comprised of different component IDs
+        # (to uniquely identify the simulation).
         self.base_id = '{0}-{1}-{2}'.format(self.simulation_id,
                                             self.topic.id, self.user.id)
 

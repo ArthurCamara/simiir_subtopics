@@ -8,6 +8,7 @@ class BaseSubtopicPicker(object):
 
     def __init__(self, search_context):
         self._search_context = search_context
+        self.all_subtopics = search_context.topic.subtopics
 
     @abc.abstractmethod
     def pick(self):

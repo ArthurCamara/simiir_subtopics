@@ -4,17 +4,20 @@ from ifind.common.query_generation import SingleQueryGeneration
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_ranker import QueryRanker
 
+
 def extract_term_dict_from_text(text, stopword_file):
     """
     takes text, parses it, and counts how many times each term occurs.
     :param text: a string
     :return: a dict of {term, count}
     """
-    single_term_text_extractor = SingleQueryGeneration(minlen=3, stopwordfile=stopword_file)
+    single_term_text_extractor = SingleQueryGeneration(
+        minlen=3, stopwordfile=stopword_file)
     single_term_text_extractor.extract_queries_from_text(text)
     term_counts_dict = single_term_text_extractor.query_count
 
     return term_counts_dict
+
 
 def read_in_background(vocab_file):
     """
@@ -30,6 +33,7 @@ def read_in_background(vocab_file):
 
     f.close()
     return LanguageModel(term_dict=vocab)
+
 
 def rank_terms(terms, **kwargs):
     """

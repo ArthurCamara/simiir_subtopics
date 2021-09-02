@@ -21,11 +21,11 @@ def main(config_filename):
         # print "Running experiment {base_id}...".format(base_id=configuration.base_id),
 
         user = SimulatedUser(configuration)  # Load user
-        # progress = ProgressIndicator(configuration)
+        progress = ProgressIndicator(configuration)
         configuration.output.display_config()
 
         while not configuration.user.logger.is_finished():
-            # progress.update()  # Update the progress indicator in the terminal.
+            progress.update()  # Update the progress indicator in the terminal.
             user.decide_action()
 
         configuration.output.display_report()

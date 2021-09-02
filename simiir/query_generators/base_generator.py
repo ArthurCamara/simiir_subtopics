@@ -47,7 +47,7 @@ class BaseQueryGenerator(object):
 
         # The language model we return is simply a representation of the number of times terms occur within the topic text.
         topic_language_model = LanguageModel(term_dict=document_term_counts)
-        # TODO: for subtopics, weight the subtopics accordingly
+
         return topic_language_model
 
     def generate_query_list(self, search_context):
