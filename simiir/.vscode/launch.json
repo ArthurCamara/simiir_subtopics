@@ -19,7 +19,7 @@
             "console": "integratedTerminal",
             "program": "run_simiir.py",
             "args": [
-                "../example_sims/subtopics_trec_bm25_simulation.xml"
+                "../example_sims/subtopics_bing_simulation.xml"
             ]
         }
     ]

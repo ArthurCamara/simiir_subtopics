@@ -44,6 +44,7 @@ class SimulatedUser(object):
 
         This method returns None.
         """
+
         def after_subtopic():
             # TODO: Stopping condition for Subtopics!
             self.__do_action(Actions.QUERY)
@@ -90,13 +91,13 @@ class SimulatedUser(object):
             Actions.SNIPPET: after_snippet,
             Actions.DOC: after_assess_document,
             Actions.MARK: after_mark,
-            None: after_none
+            None: after_none,
         }
 
         last_action = self.__search_context.get_last_action()
         last_to_next_action_mapping[last_action]()
 
-    def __do_action(self, action):
+    def __do_action(self, action: str):
         """
         Selects the appropriate method to call to execute the requested action, then logs the interaction in the log and search context.
         This method returns None.
@@ -107,7 +108,7 @@ class SimulatedUser(object):
             Actions.SERP: self.__do_serp,
             Actions.SNIPPET: self.__do_snippet,
             Actions.DOC: self.__do_assess_document,
-            Actions.MARK: self.__do_mark_document
+            Actions.MARK: self.__do_mark_document,
         }
 
         # Update the search context to reflect the most recent action.
@@ -139,12 +140,12 @@ class SimulatedUser(object):
             self.__search_context._used_subtopics.add(new_subtopic)
         self.__search_context._last_subtopic = new_subtopic
 
-    def __do_query(self):
+    def __do_query(self) -> bool:
         """
         Called when the simulated user wishes to issue another query.
         This works by calling the search context for the subsequent query text, and is then issued to the search
             interface by the search context on behalf of the user.
-        If no further queries are available, the logger is told of this - and the simulation will then stop 
+        If no further queries are available, the logger is told of this - and the simulation will then stop
             at the next iteration.
         """
         # update the query generator with the latest search context.
@@ -227,8 +228,7 @@ class SimulatedUser(object):
         judgment = False
         if self.__search_context.get_last_query():
             document = self.__search_context.get_current_document()
-            self.__logger.log_action(
-                Actions.DOC, status="EXAMINING_DOCUMENT", doc_id=document.doc_id)
+            self.__logger.log_action(Actions.DOC, status="EXAMINING_DOCUMENT", doc_id=document.doc_id)
 
             # print 'document', document.doc_id, self.__document_classifier.is_relevant(document)
 
@@ -251,13 +251,11 @@ class SimulatedUser(object):
         """
         The outcome of marking a document as relevant. At this stage, the user has decided that the document is relevant; hence True can be the only result.
         """
-        judgement_message = {
-            0: 'CONSIDERED_NOT_RELEVANT', 1: 'CONSIDERED_RELEVANT'}
+        judgement_message = {0: "CONSIDERED_NOT_RELEVANT", 1: "CONSIDERED_RELEVANT"}
 
         document = self.__search_context.get_current_document()
 
-        self.__logger.log_action(
-            Actions.MARK, status=judgement_message[document.judgment], doc_id=document.doc_id)
+        self.__logger.log_action(Actions.MARK, status=judgement_message[document.judgment], doc_id=document.doc_id)
 
         return True
 

@@ -1,5 +1,6 @@
 import abc
 from whoosh.lang.porter import stem
+from simiir.search_contexts.search_context import SearchContext
 from simiir.utils import lm_methods
 from ifind.search.query import Query
 from ifind.common.query_ranker import QueryRanker
@@ -9,7 +10,7 @@ from ifind.common.smoothed_language_model import BayesLanguageModel
 
 import logging
 
-log = logging.getLogger('query_generators.base_generator')
+log = logging.getLogger("query_generators.base_generator")
 
 
 class BaseQueryGenerator(object):
@@ -31,8 +32,7 @@ class BaseQueryGenerator(object):
         self.__allow_similar = allow_similar
 
         if self._background_file:
-            self.background_language_model = lm_methods.read_in_background(
-                self._background_file)
+            self.background_language_model = lm_methods.read_in_background(self._background_file)
 
     def _generate_topic_language_model(self, search_context):
         """
@@ -42,8 +42,7 @@ class BaseQueryGenerator(object):
         topic = search_context.topic
         topic_text = "{0} {1}".format(topic.title, topic.content)
 
-        document_term_counts = lm_methods.extract_term_dict_from_text(
-            topic_text, self._stopword_file)
+        document_term_counts = lm_methods.extract_term_dict_from_text(topic_text, self._stopword_file)
 
         # The language model we return is simply a representation of the number of times terms occur within the topic text.
         topic_language_model = LanguageModel(term_dict=document_term_counts)
@@ -61,8 +60,7 @@ class BaseQueryGenerator(object):
 
         bi_query_generator = BiTermQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
 
-        bi_query_list = bi_query_generator.extract_queries_from_text(
-            topic_text)
+        bi_query_list = bi_query_generator.extract_queries_from_text(topic_text)
 
         query_list = bi_query_list
 
@@ -97,11 +95,12 @@ class BaseQueryGenerator(object):
         """
         return False
 
-    def get_next_query(self, search_context):
+    def get_next_query(self, search_context: SearchContext) -> str:
         """
         Returns the next query - if one that hasn't been issued before is present.
         """
-        if self._query_list is None or len(self._query_list) == 0:
+        # if self._query_list is None or len(self._query_list) == 0:
+        if self._query_list is None:
             self._query_list = self.generate_query_list(search_context)
 
         # If query_limit is a positive integer, a query limit is enforced. So check the length.
@@ -139,8 +138,7 @@ class BaseQueryGenerator(object):
         :param: issued_query_list is a list of  ifind.search.query objects
         :param query_candidate: string of query terms
         """
-        query_candidate_object = Query(
-            query_candidate)  # Strip punctutation, etc - so we compare like-for-like!
+        query_candidate_object = Query(query_candidate)  # Strip punctutation, etc - so we compare like-for-like!
         query_candidate_processed = query_candidate_object.terms
 
         for query in issued_query_list:

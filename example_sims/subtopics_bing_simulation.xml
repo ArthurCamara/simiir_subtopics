@@ -1,0 +1,39 @@
+<!--
+Simulation Configuration DTD
+
+Authors: Leif Azzopardi & David Maxwell & Arthur Camara
+Date:   2021-08-31
+-->
+
+<simulationConfiguration id="subtopics_bing_sim">
+	
+    <output baseDirectory="/ssd2/arthur/simmir_py2/simiir/example_sims/output/"
+			saveInteractionLog="true"
+			saveRelevanceJudgments="true"
+			trec_eval="true" />
+	
+	<topics>
+        <!--
+        These are the topics that each simulated user will complete
+        -->
+        <topic id="radiocarbon_dating_considerations" filename="../example_data/topics/radiocarbon_dating.topic" subtopicsFilename="../example_data/subtopics/radiocarbon_dating.subtopics"/>
+ 	</topics>
+	
+	<users>
+        <user configurationFile="../example_sims/users/smart_subtopics_user.xml" />
+	</users>
+	
+	<searchInterface class="BingSearchInterface">
+        <!--
+        This is the search interface that the simulated users will interact with
+        -->
+        <attribute name="private_key" type="string" value="631e6bb0c30047acbf63d240eff250e2" is_argument="true" />
+        <attribute name="search_url" type="string" value="https://api.bing.microsoft.com/v7.0/search" is_argument="true" />
+        <attribute name="mkt" type="string" value="en-US" is_argument="true" />
+        <attribute name="redis_db" type="integer" value="5" is_argument="true" />
+        <attribute name="n_results" type="integer" value="10" is_argument="true" />
+         <!-- 0 - TFIDF, 1 - BM25, 2 - PL2 -->
+	</searchInterface>
+	
+</simulationConfiguration>
+

@@ -1,8 +1,8 @@
 <!--
 User Configuration DTD
 
-Author: David Maxwel, Arthur Camaral
-Date:   2021-09-09
+Author: David Maxwell
+Date:   2017-05-02
 -->
 
 <!ELEMENT attribute          (#PCDATA)>

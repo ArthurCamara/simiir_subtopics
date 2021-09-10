@@ -16,16 +16,14 @@ class BaseConfigReader(object):
     def __init__(self, config_filename=None, dtd_filename=None):
         self._config_filename = config_filename
 
-        dtd_path = os.path.join(os.path.dirname(__file__), 'dtds')
+        dtd_path = os.path.join(os.path.dirname(__file__), "dtds")
 
         self._dtd_filename = os.path.join(dtd_path, dtd_filename)
 
         if self._config_filename is None:
-            raise ConfigReaderError(
-                "No configuration file has been specified.")
+            raise ConfigReaderError("No configuration file has been specified.")
         else:
-            self._config_file = etree.parse(
-                self._config_filename)  # parse xml into an etree
+            self._config_file = etree.parse(self._config_filename)  # parse xml into an etree
 
         self.__validate_against_dtd()
         self.__build_dictionary()
@@ -36,14 +34,17 @@ class BaseConfigReader(object):
         Parses the configuration file and checks its validity compared to the DTD specification.
         """
         # Opens the DTD file and loads it into a lxml DTD object.
-        dtd_file = open(self._dtd_filename, 'r')
+        dtd_file = open(self._dtd_filename, "r")
         dtd_object = etree.DTD(dtd_file)
 
         # .validate() checks if the config file complies to the schema. If it doesn't, this condition is entered.
         if not dtd_object.validate(self._config_file):
             dtd_file.close()
-            raise ConfigReaderError("DTD validation failed on {0}: {1}".format(self._config_filename,
-                                                                               dtd_object.error_log.filter_from_errors()[0]))
+            raise ConfigReaderError(
+                "DTD validation failed on {0}: {1}".format(
+                    self._config_filename, dtd_object.error_log.filter_from_errors()[0]
+                )
+            )
 
         # If we get here, the validation passed, so we can close the DTD file object.
         dtd_file.close()
@@ -53,6 +54,7 @@ class BaseConfigReader(object):
         Turns the XML configuration file into a Python dictionary object.
         The nested function recursive_generation() is unsurprisingly recursive.
         """
+
         def recursive_generation(t):
             """
             Nested helper function that recursively loops through an XML node to construct a dictionary.
@@ -65,21 +67,20 @@ class BaseConfigReader(object):
                 dd = defaultdict(list)
 
                 for dc in map(recursive_generation, children):
-                    for k, v in dc.iteritems():
+                    for k, v in dc.items():
                         dd[k].append(v)
 
-                d = {t.tag: {k: v[0] if len(
-                    v) == 1 else v for k, v in dd.iteritems()}}
+                d = {t.tag: {k: v[0] if len(v) == 1 else v for k, v in dd.items()}}
 
             if t.attrib:
-                d[t.tag].update(('@' + k, v) for k, v in t.attrib.iteritems())
+                d[t.tag].update(("@" + k, v) for k, v in t.attrib.items())
 
             if t.text:
                 text = t.text.strip()
 
                 if children or t.attrib:
                     if text:
-                        d[t.tag]['#text'] = text
+                        d[t.tag]["#text"] = text
                 else:
                     d[t.tag] = text
 
@@ -89,7 +90,7 @@ class BaseConfigReader(object):
         element_tree = cElementTree.XML(string_repr)
 
         self._config_dict = recursive_generation(element_tree)
-        self._config_dict = self._config_dict[self._config_dict.keys()[0]]
+        self._config_dict = self._config_dict[list(self._config_dict.keys())[0]]
 
     @abc.abstractmethod
     def _validate_config(self):

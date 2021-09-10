@@ -1,8 +1,8 @@
 <!--
 Simulation Configuration DTD
 
-Author: David Maxwell, Arthur Camara
-Date:   2021-09-09
+Author: David Maxwell
+Date:   2014-09-13
 -->
 
 <!ELEMENT attribute          (#PCDATA)>
@@ -30,6 +30,7 @@ Date:   2021-09-09
 <!ELEMENT topic                   (#PCDATA)>
 <!ATTLIST topic                   id CDATA #REQUIRED>
 <!ATTLIST topic                   filename CDATA #REQUIRED>
+<!ATTLIST topic                   qrelsFilename CDATA #REQUIRED>
 <!ATTLIST topic                   backgroundFilename CDATA #IMPLIED>
 <!ATTLIST topic                   subtopicsFilename CDATA #IMPLIED>
 

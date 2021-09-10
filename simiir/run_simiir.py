@@ -13,7 +13,7 @@ def main(config_filename):
     For every configuration permutation, create a Simulated user object, and run the simulation (the while loop).
     Then save, report, and repeat ad naseum.
     """
-    logging.basicConfig(filename='sim.log', level=logging.DEBUG)
+    logging.basicConfig(filename="sim.log", level=logging.DEBUG)
     config_reader = SimulationConfigReader(config_filename)
 
     # For each combination of the iterables (i.e. each user type vs topic)
@@ -33,8 +33,7 @@ def main(config_filename):
         configuration.output.save()
         gc.collect()
 
-    completed_file = open(os.path.join(
-        config_reader.get_base_dir(), 'COMPLETED'), 'w')
+    completed_file = open(os.path.join(config_reader.get_base_dir(), "COMPLETED"), "w")
     completed_file.close()
 
 
@@ -42,10 +41,10 @@ def usage(script_name):
     """
     Prints the usage message to the output stream.
     """
-    print "Usage: {0} [configuration_filename]".format(script_name)
+    print("Usage: {0} [configuration_filename]".format(script_name))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     if len(sys.argv) < 2 or len(sys.argv) > 2:
         usage(sys.argv[0])
     else:
