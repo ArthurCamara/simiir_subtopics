@@ -252,7 +252,10 @@ class SearchContext(object):
         # Pull out the next result, and construct a Document object representing the snippet.
         # Set the current snippet to that Document.
         result = self._last_results[self._current_serp_position]
-        snippet = Document(result.whooshid, result.title, result.summary, result.docid)
+        try:
+            snippet = Document(result.whooshid, result.title, result.summary, result.docid)
+        except AttributeError:  # It's not a Whoosh doc, but an actual web doc.
+            snippet = Document(result.url, result.title, result.summary)
 
         self._snippets_examined.append(snippet)
         self._all_snippets_examined.append(snippet)
