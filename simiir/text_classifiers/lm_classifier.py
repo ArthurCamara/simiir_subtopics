@@ -14,7 +14,7 @@ log = logging.getLogger("lm_classifer.LMTextClassifier")
 class LMTextClassifier(BaseTextClassifier):
     """ """
 
-    def __init__(self, topic, search_context, stopword_file=[], background_file=[]):
+    def __init__(self, topic, search_context, stopword_file=[], background_file=[], clean: bool = False):
         """ """
         super(LMTextClassifier, self).__init__(topic, search_context, stopword_file, background_file)
         self.alpha = 1.0
@@ -27,6 +27,7 @@ class LMTextClassifier(BaseTextClassifier):
         self.title_weight = 1
         self.title_only = False
         self.make_topic_language_model()
+        self.clean = clean
 
     def _make_topic_text(self, **kwargs):
         """
@@ -58,8 +59,8 @@ class LMTextClassifier(BaseTextClassifier):
         When self.update_method==1, documents are considered; else snippets.
         """
         if self.updating:
-            ## Once we develop more update methods, it is probably worth making this a strategy
-            ## so that setting the update_method changes the list of documents to use.
+            # Once we develop more update methods, it is probably worth making this a strategy
+            # so that setting the update_method changes the list of documents to use.
             if self.update_method == 1:
                 document_list = search_context.get_all_examined_documents()
             else:
@@ -108,8 +109,12 @@ class LMTextClassifier(BaseTextClassifier):
         score = 0.0
         count = 0.0
 
-        title_stripped = clean_html(document.title)
-        content_stripped = clean_html(document.content)
+        if not self.clean:
+            title_stripped = clean_html(document.title)
+            content_stripped = clean_html(document.content)
+        else:
+            title_stripped = document.title.split()
+            content_stripped = document.content.split()
 
         for term in title_stripped:
             score = score + self.get_term_score(term)

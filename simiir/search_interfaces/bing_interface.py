@@ -11,6 +11,7 @@ import requests
 import pickle
 import justext
 import lxml
+import string
 
 log = logging.getLogger("simuser.search_interfaces.bing_interface")
 
@@ -204,20 +205,27 @@ class BingSearchInterface(BaseSearchInterface):
         rank_counter = 1
 
         for r in bing_results["webPages"]["value"]:
-            self._doc_titles[r"url"] = r["name"]
-            response.add_result(title=r["name"], url=r["url"], summary=r["snippet"], rank=rank_counter)
+            self._doc_titles[r["url"]] = self.__clean_string(r["name"])
+            clean_snippet = self.__clean_string(r["snippet"].replace("<b>", "").replace("</b>", ""))
+            response.add_result(
+                title=self._doc_titles[r["url"]],
+                url=r["url"],
+                summary=clean_snippet,
+                rank=rank_counter,
+            )
             rank_counter += 1
 
         return response
 
-    def _fetch_web_page_contents(self, url: str) -> str:
+    def _fetch_web_page_contents(self, url: str) -> List[str]:
         """Fetches a webpage, given its url. May return an empty page if the page can't be reached for some reason.
         If the page already exists in the local redis cache, will return it instead.
         Args:
             url: A string with the page url to be fetched
         """
         if self.__redis_in_use and self.__redis_page_cache.exists(url):
-            return self.__redis_page_cache.get(url)
+            return self.__redis_page_cache.get(url).decode("utf-8")
+
         s = requests.Session()
         s.headers.update(
             {
@@ -233,9 +241,9 @@ class BingSearchInterface(BaseSearchInterface):
             log.warn("Could not fetch page {}".format(url))
             return ""
 
-        page_content = " ".join(self.__clean_page(page_content[1]))
+        page_content = " ".join(self.__clean_page(page_content)[1])
         if self.__redis_in_use:
-            self.__redis_page_cache.set(url, page_content)
+            self.__redis_page_cache.set(url, self.__clean_string(page_content))
         return page_content
 
     def __clean_page(self, html_content):
@@ -250,3 +258,9 @@ class BingSearchInterface(BaseSearchInterface):
         if total_text_len == 0:
             return (0, [])
         return (total_text_len, paragraphs)
+
+    def __clean_string(self, s: str):
+        """Clean up a string s, setting up to all lower and removing punctuation"""
+        s = s.replace("_", " ").replace("-", " ").replace("“", "").replace("”", "").replace("'", " ").replace('"', " ")
+        clean_s = s.lower().translate(str.maketrans("", "", string.punctuation))
+        return clean_s

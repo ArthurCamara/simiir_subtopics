@@ -9,7 +9,7 @@ def clean_html(input_str):
     Given an HTML-formatted string, decodes HTML entitles and removes any HTML tags.
     A list of terms is returned, leaving text. Punctuation is not removed.
     """
-    parser = HTMLParser.HTMLParser()
+    parser = HTMLParser()
 
     stripped = parser.unescape(input_str)
     stripped = re.sub("<.*?>", "", stripped)

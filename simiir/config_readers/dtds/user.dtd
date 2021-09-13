@@ -21,9 +21,11 @@ Date:   2021-09-09
 
 <!ELEMENT snippetClassifier  (attribute*)>
 <!ATTLIST snippetClassifier  class CDATA #REQUIRED>
+<!ATTLIST snippetClassifier  clean CDATA #IMPLIED>
 
 <!ELEMENT documentClassifier (attribute*)>
 <!ATTLIST documentClassifier class CDATA #REQUIRED>
+<!ATTLIST documentClassifier clean CDATA #IMPLIED>
 
 <!ELEMENT stoppingDecisionMaker      (attribute*)>
 <!ATTLIST stoppingDecisionMaker      class CDATA #REQUIRED>

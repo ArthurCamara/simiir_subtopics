@@ -10,13 +10,13 @@ class SubtopicLMGenerator(BaseQueryGenerator):
     """
     This classs implement one LM query generator for each subtopic.
     It will generate 3-terms queries every time, EXCEPT if it is the first time a subtopic has been picked.
-    In  this case, the query will be subtopic title.
+        In  this case, the query will be subtopic title.
     This is based on the tri_term_generator.
     """
 
     def __init__(self, stopword_file, background_file=[]):
-        super(SubtopicLMGenerator, self).__init__(
-            stopword_file, background_file=background_file, allow_similar=True)
+        super(SubtopicLMGenerator, self).__init__(stopword_file, background_file=background_file, allow_similar=True)
+
         # As an extra, we also have one LM for each subtopic. They are initialized as the full background LM.
         self.subtopics_language_models = dict()
         # Keep track of the last subtiopic issued, so we can properly update the model
@@ -40,14 +40,15 @@ class SubtopicLMGenerator(BaseQueryGenerator):
             topic_text = search_context.topic.get_topic_text()
             subtopic_text = self.last_subtopic
 
-            all_text = '{0} {1} {2}'.format(topic_text, subtopic_text, snippet_text)
+            all_text = "{0} {1} {2}".format(topic_text, subtopic_text, snippet_text)
 
             term_counts = lm_methods.extract_term_dict_from_text(all_text, self._stopword_file)
             language_model = LanguageModel(term_dict=term_counts)
 
             # Update subtopic LM
             smoothed_subtopic_language_model = SmoothedLanguageModel(
-                language_model, self.subtopics_language_models[subtopic_text])
+                language_model, self.subtopics_language_models[subtopic_text]
+            )
 
             # Update background LM
             smoothed_topic_language_model = SmoothedLanguageModel(language_model, self.background_language_model)
@@ -68,15 +69,15 @@ class SubtopicLMGenerator(BaseQueryGenerator):
 
         # iterate through document_list, pull out relevant snippets / text
         rel_text_list = []
-        snippet_text = ''
+        snippet_text = ""
         for doc in document_list:
             if doc.judgment > 0:
-                rel_text_list.append('{0} {1}'.format(doc.title, doc.content))
+                rel_text_list.append("{0} {1}".format(doc.title, doc.content))
 
         if rel_text_list:
-            snippet_text = ' '.join(rel_text_list)
+            snippet_text = " ".join(rel_text_list)
 
-        snippet_soup = BeautifulSoup(snippet_text, 'html.parser')
+        snippet_soup = BeautifulSoup(snippet_text, "html.parser")
 
         return snippet_soup.get_text()
 
@@ -90,7 +91,7 @@ class SubtopicLMGenerator(BaseQueryGenerator):
             if self.background_language_model.get_num_occurrences(term) > 0:
                 checked_term_list.append(term)
 
-        return ' '.join(checked_term_list)
+        return " ".join(checked_term_list)
 
     def _generate_topic_language_model(self, search_context, subtopic):
         # if no subtopic, pick from the standart language model.
@@ -143,7 +144,8 @@ class SubtopicLMGenerator(BaseQueryGenerator):
         description_query_list = self._rank_terms(description_query_list, topic_language_model=subtopic_language_model)
 
         generated_permutations = self.__generate_permutations(
-            subtopic_language_model, title_query_list, description_query_list)
+            subtopic_language_model, title_query_list, description_query_list
+        )
 
         return generated_permutations
 
@@ -173,7 +175,7 @@ class SubtopicLMGenerator(BaseQueryGenerator):
                 continue
             else:
                 count = 0
-                windows.append('{0} {1}'.format(prev_term, term[0]))
+                windows.append("{0} {1}".format(prev_term, term[0]))
 
         return self._rank_terms(windows, topic_language_model=topic_language_model)
 
@@ -216,13 +218,12 @@ class SubtopicLMGenerator(BaseQueryGenerator):
 
                 if get_terms == 2:
                     if len(description_two) == 2:
-                        title_terms.append('{0} {1} {2}'.format(title_term[0], description_two[0], description_two[1]))
+                        title_terms.append("{0} {1} {2}".format(title_term[0], description_two[0], description_two[1]))
                         description_two = [description_term[0]]
                     else:
                         description_two.append(description_term[0])
                 else:
-                    title_terms.append('{0} {1}'.format(
-                        title_term[0], description_term[0]))
+                    title_terms.append("{0} {1}".format(title_term[0], description_term[0]))
 
                 cutoff_counter = cutoff_counter + 1
 

@@ -22,12 +22,15 @@ class TopicBasedLMTextClassifier(LMTextClassifier):
         topic_weighting=1,
         topic_background_weighting=1,
         document_weighting=1,
+        clean=False,
     ):
         self.topic_weighting = topic_weighting  # Weighting score for topic text
         self.topic_background_weighting = topic_background_weighting  # Weighting score for background topic text
         self.document_weighting = document_weighting  # Weighting score for examined snippet text
 
-        super(TopicBasedLMTextClassifier, self).__init__(topic, search_context, stopword_file, background_file)
+        super(TopicBasedLMTextClassifier, self).__init__(
+            topic, search_context, stopword_file, background_file, clean=clean
+        )
 
     def make_topic_language_model(self):
         """
