@@ -3,7 +3,8 @@ from loggers import Actions
 
 class SimulatedUser(object):
     """
-    The simulated user. Stores references to all the required components, and contains the logical workflow for the simulation.
+    The simulated user. Stores references to all the required components, and contains the logical
+        workflow for the simulation.
     """
 
     def __init__(self, configuration):
@@ -37,7 +38,7 @@ class SimulatedUser(object):
         (5*) If the snippet looks at least somewhat relevant, goto (6) else decide whether to goto (0) or (4)
 
         (6)  Examine document
-        (7*) If the document looks to be relevant to the provided topic, goto (8), else decide whether to goto (0) or (4)
+        (7*) If the document looks to be relevant to the provided topic, goto (8), else decide whether to goto (0) or (4) # noqa: E501
 
         (8)  Mark the document
         (9*) Decide whether to goto (0) or (4)
@@ -73,7 +74,7 @@ class SimulatedUser(object):
         def after_mark():
             """
             This condition will always be True; we won't get here unless the document has been successfully marked!
-            After the document has been marked, the user must decide whether (s)he wants to look at the subsequent snippet, or issue another query.
+            After the document has been marked, the user must decide whether (s)he wants to look at the subsequent snippet, or issue another query. # noqa: E501
             """
             self.__do_action(self.__do_decide())
 
@@ -99,7 +100,7 @@ class SimulatedUser(object):
 
     def __do_action(self, action: str):
         """
-        Selects the appropriate method to call to execute the requested action, then logs the interaction in the log and search context.
+        Selects the appropriate method to call to execute the requested action, then logs the interaction in the log and search context. # noqa: E501
         This method returns None.
         """
         action_mapping = {
@@ -117,6 +118,7 @@ class SimulatedUser(object):
         self.__search_context.set_action(action)
 
         # Now call the appropriate method to perform the action.
+        print(action)
         self.__action_value = action_mapping[action]()
 
     def __do_subtopic(self):
@@ -171,7 +173,7 @@ class SimulatedUser(object):
     def __do_serp(self):
         """
         Called when the simulated user wishes to examine a SERP - the "initial glance" - after issuing a query.
-        If the SERP has no results, we continue with the next action - otherwise we will always go and look at said SERP.
+        If the SERP has no results, we continue with the next action - otherwise we will always go and look at said SERP. # noqa: E501
         """
         if self.__search_context.get_current_results_length() == 0:
             self.__logger.log_action(Actions.SERP, status="EMPTY_SERP")
@@ -194,14 +196,14 @@ class SimulatedUser(object):
     def __do_snippet(self):
         """
         Called when the user needs to make the decision whether to examine a snippet or not.
-        The logic within this method supports previous observations of the same document, and whether the text within the snippet appears to be relevant.
+        The logic within this method supports previous observations of the same document, and whether the text within the snippet appears to be relevant. # noqa: E501
         """
         judgment = False
         snippet = self.__search_context.get_current_snippet()
         self.__search_context.increment_serp_position()
 
         if self.__search_context.get_document_observation_count(snippet) > 0:
-            # This document has been previously seen; so we ignore it. But the higher the count, cumulated credibility could force us to examine it?
+            # This document has been previously seen; so we ignore it. But the higher the count, cumulated credibility could force us to examine it? # noqa: E501
             self.__logger.log_action(Actions.SNIPPET, status="SEEN_PREVIOUSLY", snippet=snippet)
 
         else:
@@ -249,7 +251,7 @@ class SimulatedUser(object):
 
     def __do_mark_document(self):
         """
-        The outcome of marking a document as relevant. At this stage, the user has decided that the document is relevant; hence True can be the only result.
+        The outcome of marking a document as relevant. At this stage, the user has decided that the document is relevant; hence True can be the only result. # noqa: E501
         """
         judgement_message = {0: "CONSIDERED_NOT_RELEVANT", 1: "CONSIDERED_RELEVANT"}
 
@@ -261,15 +263,15 @@ class SimulatedUser(object):
 
     def __do_decide(self):
         """
-        Method which returns whether a further snippet should be examined, the next query should be issued, or some other action.
-        This is the "decision making" logic - and is abstracted to the instantiated DecisionMaker instance to work this out.
+        Method which returns whether a further snippet should be examined, the next query should be issued, or some other action. # noqa: E501
+        This is the "decision making" logic - and is abstracted to the instantiated DecisionMaker instance to work this out. # noqa: E501
         """
         current_serp_length = self.__search_context.get_current_results_length()
         current_serp_position = self.__search_context.get_current_serp_position() + 1
 
         if current_serp_position > current_serp_length:
             # If this condition arises, we have reached the end of the SERP!
-            # When SERP pagination is implemented, this condition will either result in moving to the next SERP page or query.
+            # When SERP pagination is implemented, this condition will either result in moving to the next SERP page or query. # noqa: E501
             self.__output_controller.log_info(info_type="SERP_END_REACHED")
             return Actions.SUBTOPIC
 

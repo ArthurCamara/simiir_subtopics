@@ -1,11 +1,13 @@
+from typing import Dict, List
 from simiir.search_interfaces import Document
 from simiir.search_interfaces.base_interface import BaseSearchInterface
 from ifind.search.response import Response
+from ifind.search.query import Query
 import logging
 import time
 import redis
-import pickle
 import requests
+import pickle
 
 log = logging.getLogger("simuser.search_interfaces.bing_interface")
 
@@ -92,13 +94,28 @@ class BingSearchInterface(BaseSearchInterface):
     """
     A search interface making use of the Bing REST API
     Params:
+        private_key: A string with the BING API key.
+        n_results: Integer with may results to return at each interaction.
+        search_url: BING API endpoint URL.
+        blocklist: List with urls that should NOT be returned by BING. Generally, a copy of wikipedia.
+        redis_db: Optional. If used, the ID of a redis DB to be used to cache results. redis_db+1 will store SERPS
+        mkt: Optional. A string with what market to use for the bing api. Defaults to en-US.
     """
 
-    def __init__(self, private_key, n_results, search_url, blocklist=BLOCKLIST, redis_db=None, mkt="en-US"):
+    def __init__(
+        self,
+        private_key: str,
+        n_results: int,
+        search_url: str,
+        blocklist: List[str] = BLOCKLIST,
+        redis_db: int = None,
+        mkt: str = "en-US",
+    ):
         super(BingSearchInterface, self).__init__()
         log.debug("Using BING API as a search backend")
         if redis_db:
-            self.__redis_conn = redis.Redis(db=redis_db)
+            self.__redis_page_cache = redis.Redis(db=redis_db)
+            self.__redis_SERP_cache = redis.Redis(db=redis_db + 1)
         blocklist_str = " -site:".join(blocklist)
 
         self.search_url = search_url
@@ -107,14 +124,14 @@ class BingSearchInterface(BaseSearchInterface):
         # Add query as q
         self.params = {"textDecorations": True, "textFormat": "HTML", "count": n_results, "mkt": mkt}
 
-    def issue_query(self, query, top=100):
+    def issue_query(self, query: Query, top: int = 100) -> Response:
         """
         Allows one to issue a query to the underlying search engine. Takes an ifind Query object.
         """
-        print("DEBUG TIME")
+
         query.top = top
         bing_response = self._send_bing_request(query)
-        response = self._parse_bing_result(bing_response)
+        response = self._parse_bing_result(query, bing_response)
 
         self._last_query = query
         self._last_response = response
@@ -129,7 +146,7 @@ class BingSearchInterface(BaseSearchInterface):
 
         # Can have id, title, content, doc_id, qrels_filename, background_terms, subtopics
         # Need to have: doc_id, content (clean), title
-        doc = Document()
+
         fields = self.__reader.stored_fields(int(document_id))
 
         title = fields["title"]
@@ -143,10 +160,22 @@ class BingSearchInterface(BaseSearchInterface):
         document.doc_id = document_num
         document.source = document_source
 
+        # Get result from redis OR fetch it from the WEB
+
         return document
 
-    def _send_bing_request(self, query: Query):
+    def _send_bing_request(self, query: Query) -> Dict:
+        """Sends a request to the Bing API and returns a dictionary with the parsed JSON response
+        Args:
+            query: A Query object with the query terms
+        Returns:
+            A Dictionary with the parsed JSON results
+        """
         query_str = query.terms.strip().lower()
+
+        if query_str in self.__redis_SERP_cache:
+            return pickle.loads(self.__redis_SERP_cache.get(query_str))
+
         self.params["q"] = self.query_template.format(query_str)
         response = requests.get(self.search_url, headers=self.headers, params=self.params)
         try:
@@ -157,26 +186,27 @@ class BingSearchInterface(BaseSearchInterface):
                 self.search_url,
                 headers=self.headers,
                 params=self.params,
-                verify="/ssd/arthur/anaconda3/envs/simiir/lib/python2.7/site-packages/requests/cacert.pem",
             )
             response.raise_for_status()
 
+        # Store SERP in REDIS
+        self.__redis_SERP_cache.set(query_str, pickle.dumps(response.json()))
         return response.json()
 
-    def _parse_bing_result(self, query, bing_results):
+    def _parse_bing_result(self, query: Query, bing_results: Dict) -> Response:
         """Parses a bing results page into an iFind response
         Args:
-            query: An iFind query object
-            bing_results: An json dictionary with Bing results
+            query: An iFind Query object
+            bing_results: An JSON dictionary with Bing results
         Returns:
-            iFind results object"""
+            iFind Response object"""
 
         response = Response(query.terms, query)
 
         rank_counter = 1
 
         for r in bing_results["webPages"]["value"]:
-            response.add_result(title=r[u"Name"], url=r[u"url"], summary=r[u"snippet"], rank=rank_counter)
+            response.add_result(title=r["name"], url=r["url"], summary=r["snippet"], rank=rank_counter)
             rank_counter += 1
 
         return response

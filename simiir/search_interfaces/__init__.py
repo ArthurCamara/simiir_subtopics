@@ -32,16 +32,17 @@ class Topic(Document):
     Extending from Document, provides the ability to read a topic title and description from a given input file.
     """
 
-    def __init__(self,
-                 id,
-                 title=None,
-                 content=None,
-                 doc_id=None,
-                 qrels_filename=None,
-                 background_filename=None,
-                 subtopics_filename=None):
-        super(Topic, self).__init__(
-            id=id, title=title, content=content, doc_id=doc_id)
+    def __init__(
+        self,
+        id,
+        title=None,
+        content=None,
+        doc_id=None,
+        qrels_filename=None,
+        background_filename=None,
+        subtopics_filename=None,
+    ):
+        super(Topic, self).__init__(id=id, title=title, content=content, doc_id=doc_id)
         self.qrels_filename = qrels_filename
         self.background_terms = {}
         self.subtopics = []
@@ -56,10 +57,10 @@ class Topic(Document):
         Populates the background_terms attribute.
         Returns a dictionary of <term, value> pairs.
         """
-        f = open(background_filename, 'r')
+        f = open(background_filename, "r")
 
         for line in f:
-            line = line.strip().split(',')
+            line = line.strip().split(",")
 
             term = line[0]
             score = float(line[1])
@@ -83,15 +84,15 @@ class Topic(Document):
         Assumes that the first line of the input file is the topic title, and remaining lines make up the topic description.
         """
         first_line = None
-        topic_text = ''
+        topic_text = ""
 
         if topic_filename:
-            f = open(topic_filename, 'r')
+            f = open(topic_filename, "r")
 
             for line in f:
                 if not first_line:
                     first_line = line.strip()
-                topic_text = topic_text + ' ' + line
+                topic_text = topic_text + " " + line
 
         self.title = first_line
         self.content = topic_text
@@ -100,7 +101,7 @@ class Topic(Document):
         """
         Returns a string representing the topic's title and content (description).
         """
-        return '{title} {content}'.format(**self.__dict__)
+        return "{title} {content}".format(**self.__dict__)
 
     def get_topic_text_nopunctuation(self):
         """
@@ -110,10 +111,9 @@ class Topic(Document):
         topic_text = self.get_topic_text()
 
         # Remove punctuation from the string.
-        topic_text = topic_text.translate(
-            string.maketrans('', ''), string.punctuation)
+        topic_text = topic_text.translate(str.maketrans("", "", string.punctuation))
         # Remove any newline characters.
-        topic_text = topic_text.replace('\n', ' ').replace('\r', '')
+        topic_text = topic_text.replace("\n", " ").replace("\r", "")
         topic_text = topic_text.lower()  # Take everything to lowercase.
 
         return topic_text

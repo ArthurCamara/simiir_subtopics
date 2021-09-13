@@ -6,8 +6,10 @@ import importlib
 
 class BaseComponentGenerator(object):
     """
-    The base Component Generator. Given a configuration dictionary, contains functionality to generate Python objects to be used for a simulation.
-    Extend this class to include additional functionality for other components. Any extended classes should instantiate objects as attriutes in the constructor.
+    The base Component Generator. Given a configuration dictionary, contains functionality to generate Python objects
+        to be used for a simulation.
+    Extend this class to include additional functionality for other components.
+        Any extended classes should instantiate objects as attriutes in the constructor.
     """
 
     def __init__(self, config_dict):
@@ -23,22 +25,26 @@ class BaseComponentGenerator(object):
 
     def _prettify_attributes(self, config_entry, indentation_level):
         """
-        Given a configuration entry, returns any attributes for said configuration entry in a readable string representation, with one attribute per line.
+        Given a configuration entry, returns any attributes for said configuration entry in a readable
+            string representation, with one attribute per line.
         """
+
         def get_string_representation(singular):
-            return "{0}: {1}{2}".format(singular['@name'], str(singular['@value']), os.linesep)
+            return "{0}: {1}{2}".format(singular["@name"], str(singular["@value"]), os.linesep)
 
         indent_level = indentation_level * 2
         string_representation = ""
 
-        if 'attribute' in config_entry:
-            if type(config_entry['attribute']) == list:
-                for entry in config_entry['attribute']:
+        if "attribute" in config_entry:
+            if type(config_entry["attribute"]) == list:
+                for entry in config_entry["attribute"]:
                     string_representation = "{0}{1}{2}".format(
-                        string_representation, "  "*indent_level, get_string_representation(entry))
+                        string_representation, "  " * indent_level, get_string_representation(entry)
+                    )
             else:
                 string_representation = "{0}{1}".format(
-                    "  " * indent_level, get_string_representation(config_entry['attribute']))
+                    "  " * indent_level, get_string_representation(config_entry["attribute"])
+                )
 
         if len(string_representation) > 0 and string_representation[-1] == os.linesep:
             return string_representation[:-1]
@@ -50,7 +56,7 @@ class BaseComponentGenerator(object):
         Given a configuration dictionary for a particular class, a package, and an optional list of components...
         Returns an object reference which can be used as part of the simulation.
         """
-        selected_class = config_details['@class']
+        selected_class = config_details["@class"]
         available_classes = self.__get_available_classes(package)
         attributes = self.__get_attributes(config_details)
 
@@ -60,8 +66,8 @@ class BaseComponentGenerator(object):
 
                 # Add all attributes to kwargs to pass to the constructor of the object.
                 for attribute in attributes:
-                    if attribute['@is_argument']:
-                        kwargs[attribute['@name']] = attribute['@value']
+                    if attribute["@is_argument"]:
+                        kwargs[attribute["@name"]] = attribute["@value"]
 
                 # For any component attributes (e.g. Topic, SearchContext)...add to kwargs!
                 for attribute_reference in components:
@@ -71,15 +77,13 @@ class BaseComponentGenerator(object):
 
                 # If any attributes for the new object are required, now we pass them.
                 for attribute in attributes:
-                    if not attribute['@is_argument']:
-                        setattr(
-                            reference, attribute['@name'], attribute['@value'])
+                    if not attribute["@is_argument"]:
+                        setattr(reference, attribute["@name"], attribute["@value"])
 
                 # The instance should be now instantiated!
                 return reference
 
-        raise ImportError(
-            "Specified class '{0}' could not be found.".format(selected_class))
+        raise ImportError("Specified class '{0}' could not be found.".format(selected_class))
 
     def __get_available_classes(self, package):
         """
@@ -91,9 +95,8 @@ class BaseComponentGenerator(object):
 
         # List through the modules in the specified package, ignoring __init__.py, and append them to a list.
         for f in os.listdir(package):
-            if f.endswith('.py') and not f.startswith('__init__'):
-                modules.append('{0}.{1}'.format(
-                    package, os.path.splitext(f)[0]))
+            if f.endswith(".py") and not f.startswith("__init__"):
+                modules.append("{0}.{1}".format(package, os.path.splitext(f)[0]))
 
         module_references = []
 
@@ -115,10 +118,10 @@ class BaseComponentGenerator(object):
         """
         attributes = []
 
-        if 'attribute' in config_details:
-            if type(config_details['attribute']) == dict:
-                attributes.append(config_details['attribute'])
+        if "attribute" in config_details:
+            if type(config_details["attribute"]) == dict:
+                attributes.append(config_details["attribute"])
             else:
-                attributes = config_details['attribute']
+                attributes = config_details["attribute"]
 
         return attributes

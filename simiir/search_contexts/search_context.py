@@ -4,7 +4,7 @@ from ifind.search.query import Query
 from simiir.search_interfaces import Document
 import logging
 
-log = logging.getLogger('search_context.search_context')
+log = logging.getLogger("search_context.search_context")
 
 
 class NoRelevanceRevision(object):
@@ -29,8 +29,7 @@ class RelevanceRevision(NoRelevanceRevision):
     """
 
     def __init__(self, irrelevant_documents, snippets_examined):
-        super(RelevanceRevision, self).__init__(
-            irrelevant_documents, snippets_examined)
+        super(RelevanceRevision, self).__init__(irrelevant_documents, snippets_examined)
 
     def add_irrelevant_document(self, document):
         """
@@ -78,7 +77,7 @@ class SearchContext(object):
 
         # The Query object that was issued.
         self._last_query = None
-        self._last_results = None                # Results for the query.
+        self._last_results = None  # Results for the query.
         # Results for the last SERP impression upon the searcher
         self._last_serp_impression = None
         # A list of queries issued in chronological order.
@@ -122,7 +121,7 @@ class SearchContext(object):
         """
         Setter for the relevance revision technique.
         """
-        if not hasattr(self, '_relevance_revision'):
+        if not hasattr(self, "_relevance_revision"):
             self._relevance_revision = 0
 
         return self._relevance_revision
@@ -133,54 +132,48 @@ class SearchContext(object):
         The getter for the relevance revision technique.
         Given one of the key values in rr_strategies below, instantiates the relevant approach.
         """
-        rr_strategies = {
-            0: NoRelevanceRevision,
-            1: RelevanceRevision
-        }
+        rr_strategies = {0: NoRelevanceRevision, 1: RelevanceRevision}
 
         if value not in rr_strategies.keys():
-            raise ValueError(
-                "Value {0} for the relevance revision approach is not valid.".format(value))
+            raise ValueError("Value {0} for the relevance revision approach is not valid.".format(value))
 
-        self._relevance_revision = rr_strategies[value](
-            self._irrelevant_documents, self._snippets_examined)
+        self._relevance_revision = rr_strategies[value](self._irrelevant_documents, self._snippets_examined)
 
     def report(self):
         """
         Returns basic statistics held within the search context at the time of calling.
         Ideally, call at the end of the simulation for a complete set of stats.
         """
-        return_string = "    Number of Queries Issued: {0}{1}".format(
-            len(self._issued_queries), os.linesep)
-        return_string = return_string + \
-            "    Number of Snippets Examined: {0}{1}".format(
-                len(self._all_snippets_examined), os.linesep)
-        return_string = return_string + \
-            "    Number of Documents Examined: {0}{1}".format(
-                len(self._all_documents_examined), os.linesep)
-        return_string = return_string + \
-            "    Number of Documents Marked Relevant: {0}{1}".format(
-                len(self._relevant_documents), os.linesep)
-        return_string = return_string + \
-            "    Number of Attractive SERPs Examined: {0}{1}".format(
-                self._attractive_serp_count, os.linesep)
-        return_string = return_string + \
-            "    Number of Unattractive SERPs Examined: {0}".format(
-                self._unattractive_serp_count)
+        return_string = "    Number of Queries Issued: {0}{1}".format(len(self._issued_queries), os.linesep)
+        return_string = return_string + "    Number of Snippets Examined: {0}{1}".format(
+            len(self._all_snippets_examined), os.linesep
+        )
+        return_string = return_string + "    Number of Documents Examined: {0}{1}".format(
+            len(self._all_documents_examined), os.linesep
+        )
+        return_string = return_string + "    Number of Documents Marked Relevant: {0}{1}".format(
+            len(self._relevant_documents), os.linesep
+        )
+        return_string = return_string + "    Number of Attractive SERPs Examined: {0}{1}".format(
+            self._attractive_serp_count, os.linesep
+        )
+        return_string = return_string + "    Number of Unattractive SERPs Examined: {0}".format(
+            self._unattractive_serp_count
+        )
 
         self._output_controller.log_info(info_type="SUMMARY")
+        self._output_controller.log_info(info_type="TOTAL_QUERIES_ISSUED", text=len(self._issued_queries))
+        self._output_controller.log_info(info_type="TOTAL_SNIPPETS_EXAMINED", text=len(self._all_snippets_examined))
+        self._output_controller.log_info(info_type="TOTAL_DOCUMENTS_EXAMINED", text=len(self._all_documents_examined))
         self._output_controller.log_info(
-            info_type="TOTAL_QUERIES_ISSUED", text=len(self._issued_queries))
+            info_type="TOTAL_DOCUMENTS_MARKED_RELEVANT", text=len(self._relevant_documents)
+        )
         self._output_controller.log_info(
-            info_type="TOTAL_SNIPPETS_EXAMINED", text=len(self._all_snippets_examined))
+            info_type="TOTAL_ATTRACTIVE_SERP_IMPRESSIONS", text=self._attractive_serp_count
+        )
         self._output_controller.log_info(
-            info_type="TOTAL_DOCUMENTS_EXAMINED", text=len(self._all_documents_examined))
-        self._output_controller.log_info(
-            info_type="TOTAL_DOCUMENTS_MARKED_RELEVANT", text=len(self._relevant_documents))
-        self._output_controller.log_info(
-            info_type="TOTAL_ATTRACTIVE_SERP_IMPRESSIONS", text=self._attractive_serp_count)
-        self._output_controller.log_info(
-            info_type="TOTAL_UNATTRACTIVE_SERP_IMPRESSIONS", text=self._unattractive_serp_count)
+            info_type="TOTAL_UNATTRACTIVE_SERP_IMPRESSIONS", text=self._unattractive_serp_count
+        )
 
         return return_string
 
@@ -209,7 +202,7 @@ class SearchContext(object):
             Actions.SERP: self._set_serp_action,
             Actions.SNIPPET: self._set_snippet_action,
             Actions.DOC: self._set_assess_document_action,
-            Actions.MARK: self._set_mark_action
+            Actions.MARK: self._set_mark_action,
         }
 
         if action_mappings[action]:
@@ -225,13 +218,12 @@ class SearchContext(object):
     def _set_query_action(self):
         """
         Called when a new query is issued by the simulated user.
-        Resets the appropriate counters for the next iteration; stores the previously examined 
+        Resets the appropriate counters for the next iteration; stores the previously examined
             snippets and documents for reference.
         """
         if len(self._issued_queries) > 0:
             #  If a query has been issued previously, store the snippets and documents examined for reference later on.
-            self._depths.append(
-                (self._snippets_examined, self._documents_examined))
+            self._depths.append((self._snippets_examined, self._documents_examined))
 
         # Reset our counters for the next query.
         self._snippets_examined = []
@@ -260,16 +252,14 @@ class SearchContext(object):
         # Pull out the next result, and construct a Document object representing the snippet.
         # Set the current snippet to that Document.
         result = self._last_results[self._current_serp_position]
-        snippet = Document(result.whooshid, result.title,
-                           result.summary, result.docid)
+        snippet = Document(result.whooshid, result.title, result.summary, result.docid)
 
         self._snippets_examined.append(snippet)
         self._all_snippets_examined.append(snippet)
         self._current_snippet = snippet
 
         # Sets the current document
-        self._current_document = self._search_interface.get_document(
-            snippet.id)
+        self._current_document = self._search_interface.get_document(snippet.id)
 
     def get_current_snippet(self):
         """
@@ -290,10 +280,11 @@ class SearchContext(object):
         """
         pass
 
-    def add_issued_query(self, query_text, page=1, page_len=1000):
+    def add_issued_query(self, query_text: str, page: int = 1, page_len: int = 1000):
         """
         Adds a query to the stack of previously issued queries.
         """
+
         def create_query_object():
             """
             Nested method which returns a Query object for the given query string,
@@ -309,7 +300,7 @@ class SearchContext(object):
 
             return query_object
 
-        # Obtain the Query object and append it to the issued queries list.
+        # Obtain the Query object, search and append it to the issued queries list.
         query_object = create_query_object()
 
         self._issued_queries.append(query_object)
@@ -346,7 +337,7 @@ class SearchContext(object):
 
         last_query = self.get_last_query()
 
-        if hasattr(last_query, 'patch_type'):
+        if hasattr(last_query, "patch_type"):
             return last_query.patch_type
 
         return None
