@@ -3,7 +3,6 @@ import math
 from ifind.common.language_model import LanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
 from simiir.text_classifiers.base_classifier import BaseTextClassifier
-from ifind.common.smoothed_language_model import SmoothedLanguageModel
 from simiir.utils.tidy import clean_html
 from simiir.utils.lm_methods import extract_term_dict_from_text
 import logging
@@ -82,7 +81,6 @@ class LMTextClassifier(BaseTextClassifier):
     def _update_topic_language_model(self, text_list):
         topic_text = self._make_topic_text(document_text=text_list)
 
-        n = len(text_list)
         snippet_text = " ".join(text_list)
 
         term_extractor = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)

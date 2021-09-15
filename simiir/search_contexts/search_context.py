@@ -1,8 +1,12 @@
 import os
+import requests
+from collections import defaultdict
 from simiir.loggers import Actions
 from ifind.search.query import Query
 from simiir.search_interfaces import Document
 import logging
+import urllib
+import numpy as np
 
 log = logging.getLogger("search_context.search_context")
 
@@ -67,6 +71,7 @@ class SearchContext(object):
         # Documents and snippets examined for previous queries.
         self._depths = []
 
+        # SUBTOPIC TRACKING
         # User current subtopic
         self._last_subtopic = None
         self._picked_subtopics = []
@@ -74,6 +79,8 @@ class SearchContext(object):
         self._new_subtopic = False
         # Set of all used subtopics so far
         self._used_subtopics = set()
+        # Exploration of each subtopic. It's a float with the SUM of the similarities of all seen documents.
+        self._subtopics_tracking = defaultdict(lambda: 0.0)
 
         # The Query object that was issued.
         self._last_query = None
@@ -345,12 +352,6 @@ class SearchContext(object):
 
         return None
 
-    # def get_last_query(self):
-    #     """
-    #     Returns the previous query issued. If no previous query has been issued, None is returned.
-    #     """
-    #     return self._last_query
-
     def get_document_observation_count(self, selected_document):
         """
         Returns a zero or positive integer representing the number of times the simulated user has
@@ -512,3 +513,23 @@ class SearchContext(object):
         Returns a list of all queries that have been issued for the given search session.
         """
         return self._issued_queries
+
+    def update_subtopics_tracker(self, url: str):
+        """Given a clicked URL, updates the subtopic tracker accordingly
+        Sends a rquest to a server that will extract the document text and compare embeddings with the ground truth
+            (i.e. WIkipedia data)
+        Args:
+            url: A url clicked by the agent
+        """
+        """{"topic":"Theory of mind" ,"url":"https://www.dictionary.com/browse/theory-of-mind"}"""
+        body = {"topic": self.topic, url: url}
+        results = requests.get(url="http://localhost:5001/score", json=body).json()["mean"]
+        subtopic_scores = defaultdict(lambda: [])
+        for subtopic, score in results:
+            # decode subtopic
+            subtopic_name = urllib.parse.unquote(subtopic)
+            first_level = subtopic_name.split("/")[1]
+            subtopic_scores[first_level].append(float(score))
+        # normalize results
+        for k, v in subtopic_scores:
+            self._subtopics_tracking[k] += np.mean(v)

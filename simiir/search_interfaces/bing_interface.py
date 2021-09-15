@@ -91,9 +91,6 @@ BLOCKLIST = [
 ]
 
 
-# TODO CACHE RESULTS TO REDIS
-
-
 class BingSearchInterface(BaseSearchInterface):
     """
     A search interface making use of the Bing REST API
