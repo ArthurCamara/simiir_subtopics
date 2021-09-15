@@ -88,6 +88,7 @@ BLOCKLIST = [
     "youtube.com",
     "everything.explained.today",
     "self.guttenberg.org",
+    "knowpia.com",
 ]
 
 
