@@ -233,10 +233,14 @@ class BingSearchInterface(BaseSearchInterface):
         s.mount("https://", adapter)
         s.mount("http://", adapter)
         try:
-            page_content = s.get(url, verify=False, timeout=5).text
+            page_content = s.get(url, timeout=5).text
         except (requests.ConnectionError, requests.exceptions.TooManyRedirects, requests.exceptions.ReadTimeout):
-            log.warn("Could not fetch page {}".format(url))
-            return ""
+            try:
+                time.sleep(1)
+                page_content = s.get(url, timeout=5).text
+            except (requests.ConnectionError, requests.exceptions.TooManyRedirects, requests.exceptions.ReadTimeout):
+                log.warn("Could not fetch page {}".format(url))
+                return ""
 
         page_content = " ".join(self.__clean_page(page_content)[1])
         if self.__redis_in_use:

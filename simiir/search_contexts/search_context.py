@@ -6,7 +6,6 @@ from ifind.search.query import Query
 from simiir.search_interfaces import Document
 import logging
 import urllib
-import numpy as np
 
 log = logging.getLogger("search_context.search_context")
 
@@ -524,12 +523,12 @@ class SearchContext(object):
         """{"topic":"Theory of mind" ,"url":"https://www.dictionary.com/browse/theory-of-mind"}"""
         body = {"topic": self.topic.title, "url": url}
         results = requests.get(url="http://localhost:5001/score", json=body).json()["mean"]
-        subtopic_scores = defaultdict(lambda: [])
+        subtopic_scores = dict()
         for subtopic, score in results:
             # decode subtopic
             subtopic_name = urllib.parse.unquote(subtopic)
             first_level = subtopic_name.split("/")[1]
-            subtopic_scores[first_level].append(float(score))
+            subtopic_scores[first_level] = float()
         # normalize results
         for k, v in subtopic_scores.items():
-            self._subtopics_tracking[k] += np.mean(v)
+            self._subtopics_tracking[k] += v
