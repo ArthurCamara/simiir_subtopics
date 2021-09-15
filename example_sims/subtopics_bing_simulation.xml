@@ -10,7 +10,9 @@ Date:   2021-08-31
     <output baseDirectory="/ssd2/arthur/simmir_py2/simiir/example_sims/output/"
 			saveInteractionLog="true"
 			saveRelevanceJudgments="true"
-			trec_eval="true" />
+        trec_eval="false"
+        saveLanguageModels="true"
+        saveSubtopicTracking="true"/>
 	
 	<topics>
         <!--

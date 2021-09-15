@@ -3,11 +3,13 @@ import string
 
 class Document(object):
     """
-    Basic representation of a document - including a unique identifier (index ID), a title, document content (body), and an additional identifier (e.g. collection ID).
+    Basic representation of a document -
+        including a unique identifier (index ID), a title, document content (body),
+        and an additional identifier (e.g. collection ID).
     Parameters title, content and the additional identifier are optional.
     """
 
-    def __init__(self, id, title=None, content=None, doc_id=None):
+    def __init__(self, id, title=None, content=None, doc_id=None, subtopic=None):
         """
         Instantiates an instance of the Document.
         """
@@ -16,6 +18,7 @@ class Document(object):
         self.content = content
         self.doc_id = id
         self.judgment = -1
+        self.subtopic = subtopic
 
         if self.doc_id:
             self.doc_id = doc_id
@@ -81,7 +84,8 @@ class Topic(Document):
     def read_topic_from_file(self, topic_filename):
         """
         Attempts to open the given filename for reading and stores the contents within the given topic object.
-        Assumes that the first line of the input file is the topic title, and remaining lines make up the topic description.
+        Assumes that the first line of the input file is the topic title,
+            and remaining lines make up the topic description.
         """
         first_line = None
         topic_text = ""

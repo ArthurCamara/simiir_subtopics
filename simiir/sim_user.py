@@ -21,7 +21,6 @@ class SimulatedUser(object):
         # Response from the previous action method - True or False? (did the user do or not do what they thought?)
         self.__action_value = None
 
-    # TODO: add subtopic exploration
     def decide_action(self):
         """
         This method is central to the whole simulation - it decides which action the user should perform next.
@@ -47,7 +46,6 @@ class SimulatedUser(object):
         """
 
         def after_subtopic():
-            # TODO: Stopping condition for Subtopics!
             self.__do_action(Actions.QUERY)
 
         def after_query():
@@ -76,6 +74,7 @@ class SimulatedUser(object):
             This condition will always be True; we won't get here unless the document has been successfully marked!
             After the document has been marked, the user must decide whether (s)he wants to look at the subsequent snippet, or issue another query. # noqa: E501
             """
+            # Update  LMs after marking a doc as relevant.
             self.__do_action(self.__do_decide())
 
         def after_none():
@@ -114,11 +113,11 @@ class SimulatedUser(object):
 
         # Update the search context to reflect the most recent action.
         # Logging takes place within each method called (e.g. __do_query()) to reflect different values being passed.
-        # This method prepares whatevert is nedded BEFORE calling the actual step.
+        # This method prepares whatever is nedded BEFORE calling the actual step.
         self.__search_context.set_action(action)
 
         # Now call the appropriate method to perform the action.
-        print(action)
+        # print(action)
         self.__action_value = action_mapping[action]()
 
     def __do_subtopic(self):
@@ -129,6 +128,17 @@ class SimulatedUser(object):
         """
         # Get a new subtopic
         new_subtopic = self.__subtopic_picker.pick()
+        if new_subtopic is False:
+            # If there is no new subtopic, we are done. And we end the simulation
+            # Save LMs one more time
+            self.__output_controller.log_language_model(self.__query_generator.background_language_model, "GLOBAL")
+            for subtopic in self.__search_context.topic.subtopics:
+                self.__output_controller.log_language_model(
+                    self.__query_generator.subtopics_language_models[subtopic], subtopic
+                )
+
+            self.__logger.queries_exhausted()
+            return False
 
         # Set next query to be the title of the subtopic
         if new_subtopic not in self.__search_context._used_subtopics:
@@ -141,6 +151,7 @@ class SimulatedUser(object):
             self.__search_context._picked_subtopics.append(new_subtopic)
             self.__search_context._used_subtopics.add(new_subtopic)
         self.__search_context._last_subtopic = new_subtopic
+        return True
 
     def __do_query(self) -> bool:
         """
@@ -152,6 +163,18 @@ class SimulatedUser(object):
         """
         # update the query generator with the latest search context.
         self.__query_generator.update_model(self.__search_context)
+        # save all language models
+        self.__output_controller.log_language_model(self.__query_generator.background_language_model, "GLOBAL")
+        for subtopic in self.__search_context.topic.subtopics:
+            try:
+                self.__output_controller.log_language_model(
+                    self.__query_generator.subtopics_language_models[subtopic], subtopic
+                )
+            except KeyError:  # LM still doesn't exist. Create it.
+                self.__query_generator.init_lm_subtopic(subtopic, self.__search_context)
+                self.__output_controller.log_language_model(
+                    self.__query_generator.subtopics_language_models[subtopic], subtopic
+                )
 
         # Get a query from the generator.
         query_text = self.__query_generator.get_next_query(self.__search_context)
@@ -167,7 +190,7 @@ class SimulatedUser(object):
 
         self.__output_controller.log_info(info_type="OUT_OF_QUERIES")
         # Tells the logger that there are no remaining queries; the logger will then stop the simulation.
-        self.__logger.queries_exhausted()
+        # self.__logger.queries_exhausted()
         return False
 
     def __do_serp(self):
@@ -241,6 +264,7 @@ class SimulatedUser(object):
                 judgment = True
                 # Update tracking of subtopics
                 self.__search_context.update_subtopics_tracker(document.id)
+                self.__output_controller.log_subtopic_tracking(self.__search_context.get_subtopic_tracking())
             else:
                 document.judgment = 0
                 self.__search_context.add_irrelevant_document(document)

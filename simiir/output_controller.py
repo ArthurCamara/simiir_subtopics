@@ -1,3 +1,5 @@
+from collections import defaultdict
+import json
 import os
 
 
@@ -13,11 +15,14 @@ class OutputController(object):
         self.__save_interaction_log_flag = output_configuration["@saveInteractionLog"]
         self.__save_relevance_judgments_flag = output_configuration["@saveRelevanceJudgments"]
         self.__save_language_models_flag = output_configuration["@saveLanguageModels"]
+        self.__save_subtopic_tracking_flag = output_configuration["@saveSubtopicTracking"]
         self.__trec_eval_flag = output_configuration["@trec_eval"]
 
         self.__save_config_log_flag = True
         self.__interaction_log = []
         self.__query_log = []
+        self.__language_models = defaultdict(lambda: [])
+        self._subtopic_tracking = []
 
         self.output_indentation = 2  # Controls the level of indentation when outputting results to stdout.
         # Publicly facing instance variable - is used by the Component Generators prettify() methods.
@@ -29,9 +34,22 @@ class OutputController(object):
         """
         self.__interaction_log.append(entry)
 
+    def log_subtopic_tracking(self, subtopic_tracking):
+        """Saves locally how the subtopic tracking is evolving over time"""
+        self._subtopic_tracking.append(subtopic_tracking)
+
+    def log_language_model(self, lm, name):
+        """Saves locally a language model with a given name.
+        Will be saved as pickle files in the end."""
+        try:
+            self.__language_models[name].append(lm.occurrence_dict)
+        except AttributeError:
+            self.__language_models[name].append(lm.docLM.occurrence_dict)
+
     def log_info(self, info_type=None, text=""):
         """
-        Logs additional information to the interaction log which may be useful when supplemented with action log entries.
+        Logs additional information to the interaction log which may be useful when supplemented
+            with action log entries.
         For example, you could include statistics at the end of the log file with this command.
 
         Entries are logged in the format
@@ -88,15 +106,30 @@ class OutputController(object):
         self.__save_query_log()
         self.__save_simulation_config()
         self.__save_language_models()
+        self.__save_subtopic_tracking()
         self.__run_trec_eval()
 
     def __save_language_models(self):
+        """save language models as a json file.
+        Each entry is a list of dictionaries, with each element being the language model on that point in time"""
         if not self.__save_language_models_flag:
             return
-        language_models_filename = f"{self.__simulation_configuration.base_id}.lms"
+        language_models_filename = f"{self.__simulation_configuration.base_id}.lms.json"
         language_models_filename = os.path.join(self.__base_directory, language_models_filename)
 
-        log_file = open(language_models_filename, "w")
+        with open(language_models_filename, "w") as outf:
+            outf.write(json.dumps(self.__language_model))
+
+    def __save_subtopic_tracking(self):
+        if not self.__save_subtopic_tracking_flag:
+            return
+
+        subtopics_filename = f"{self.__simulation_configuration.base_id}.subtopics"
+        subtopics_filename = os.path.join(self.__base_directory, subtopics_filename)
+
+        with open(subtopics_filename, "w") as outf:
+            for s in self._subtopic_tracking:
+                outf.write(json.dumps(s) + "\n")
 
     def __save_simulation_config(self):
         """

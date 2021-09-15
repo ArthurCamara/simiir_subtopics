@@ -1,16 +1,18 @@
 import abc
 from loggers import Actions
 
+
 class BaseLogger(object):
     """
     An abstract logger class. Contains the skeleton code and abstract methods to implement a full logger.
     Inherit from this class to create a different logger.
     """
+
     def __init__(self, output_controller, search_context):
         self._output_controller = output_controller
         self._search_context = search_context
         self._queries_exhausted = False
-    
+
     def log_action(self, action_name, **kwargs):
         """
         A nice helper method which is publicly exposed for logging an event.
@@ -18,34 +20,34 @@ class BaseLogger(object):
         Use additional keywords to provide additional arguments to the logger.
         """
         action_mapping = {
-            Actions.QUERY  : self._log_query,
-            Actions.SERP   : self._log_serp,
+            Actions.QUERY: self._log_query,
+            Actions.SERP: self._log_serp,
             Actions.SNIPPET: self._log_snippet,
-            Actions.DOC    : self._log_assess,
-            Actions.MARK   : self._log_mark_document,
+            Actions.DOC: self._log_assess,
+            Actions.MARK: self._log_mark_document,
         }
-        
+
         if action_mapping[action_name]:
             action_mapping[action_name](**kwargs)
         else:
             self.__log_unknown_action(action_name)
-    
+
     @abc.abstractmethod
     def get_last_query_time(self):
         return 0
-    
+
     @abc.abstractmethod
     def get_last_interaction_time(self):
         return 0
-    
+
     @abc.abstractmethod
     def get_last_marked_time(self):
         return 0
-    
+
     @abc.abstractmethod
     def get_last_relevant_snippet_time(self):
         return 0
-    
+
     @abc.abstractmethod
     def get_progress(self):
         """
@@ -54,7 +56,7 @@ class BaseLogger(object):
         If the progress of the simulation cannot be determined, return None.
         """
         return None
-    
+
     @abc.abstractmethod
     def is_finished(self):
         """
@@ -63,21 +65,21 @@ class BaseLogger(object):
         Depending on the implemented logger, this could be the number of queries issued, a time limit, etc...
         """
         return self._queries_exhausted
-    
+
     def queries_exhausted(self):
         """
         This method is called when the list of queries to be issued has been exhausted.
         Sets an internal flag within the Logger, meaning that the next call to .is_finished() will stop the process.
         """
         self._queries_exhausted = True
-    
+
     def _report(self, action, **kwargs):
         """
         A simple method to report the current action being logged.
         Extend this method and call the parent implementation (via super()) to include additional details.
         """
         return "ACTION {0} ".format(action)
-    
+
     @abc.abstractmethod
     def _log_query(self, **kwargs):
         """
@@ -85,7 +87,7 @@ class BaseLogger(object):
         Returns None.
         """
         pass
-    
+
     @abc.abstractmethod
     def _log_serp(self, **kwargs):
         """
@@ -93,7 +95,7 @@ class BaseLogger(object):
         Returns None.
         """
         pass
-    
+
     @abc.abstractmethod
     def _log_snippet(self, **kwargs):
         """
@@ -101,7 +103,7 @@ class BaseLogger(object):
         Returns None.
         """
         pass
-    
+
     @abc.abstractmethod
     def _log_assess(self, **kwargs):
         """
@@ -109,7 +111,7 @@ class BaseLogger(object):
         Returns None.
         """
         pass
-    
+
     @abc.abstractmethod
     def _log_mark_document(self, **kwargs):
         """
@@ -117,6 +119,6 @@ class BaseLogger(object):
         Returns None.
         """
         pass
-    
+
     def __log_unknown_action(self):
-        self._report('UNKNOWN ACTION')
+        self._report("UNKNOWN ACTION")

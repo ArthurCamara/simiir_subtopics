@@ -30,12 +30,13 @@
          <attribute name="nonrelevant_threshold" type="integer" value="3" is_argument="true" />
      </stoppingDecisionMaker>
 
-    <subtopicDecisionMaker class="RandomSubtopicPicker">
+    <subtopicDecisionMaker class="GreedySubtopicPicker">
         <attribute name="seed" type="integer" value="42" is_argument="true" />
+        <attribute name="limit" type="float" value="10" is_argument="true" />
     </subtopicDecisionMaker>
     
     <logger class="FixedCostLogger">
-		<attribute name="time_limit" type="integer" value="600" is_argument="true" />
+		<attribute name="time_limit" type="integer" value="2400" is_argument="true" />
 		<attribute name="query_cost" type="integer" value="10" is_argument="true" />
 		<attribute name="document_cost" type="integer" value="20" is_argument="true" />
 		<attribute name="snippet_cost" type="integer" value="3" is_argument="true" />

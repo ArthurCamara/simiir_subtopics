@@ -1,9 +1,11 @@
 import os
+import time
 import requests
 from collections import defaultdict
 from simiir.loggers import Actions
 from ifind.search.query import Query
 from simiir.search_interfaces import Document
+from typing import Dict
 import logging
 import urllib
 
@@ -269,6 +271,7 @@ class SearchContext(object):
 
         # Sets the current document
         self._current_document = self._search_interface.get_document(snippet.id)
+        self._current_document.subtopic = self._last_subtopic
 
     def get_current_snippet(self):
         """
@@ -361,7 +364,7 @@ class SearchContext(object):
         occurrences = 0
 
         for document in self._all_documents_examined:
-            if document.doc_id == selected_document.doc_id:
+            if document.id == selected_document.id:
                 occurrences = occurrences + 1
 
         return occurrences
@@ -522,13 +525,18 @@ class SearchContext(object):
         """
         """{"topic":"Theory of mind" ,"url":"https://www.dictionary.com/browse/theory-of-mind"}"""
         body = {"topic": self.topic.title, "url": url}
-        results = requests.get(url="http://localhost:5001/score", json=body).json()["mean"]
-        subtopic_scores = dict()
+        try:
+            results = requests.get(url="http://localhost:5001/score", json=body).json()["mean"]
+        except ConnectionError:  # Wait a second and try again
+            time.sleep(1)
+            results = requests.get(url="http://localhost:5001/score", json=body).json()["mean"]
         for subtopic, score in results:
             # decode subtopic
-            subtopic_name = urllib.parse.unquote(subtopic)
-            first_level = subtopic_name.split("/")[1]
-            subtopic_scores[first_level] = float()
-        # normalize results
-        for k, v in subtopic_scores.items():
-            self._subtopics_tracking[k] += v
+            parsed_name = urllib.parse.unquote(subtopic.split("/")[1])
+            self._subtopics_tracking[parsed_name] += score
+
+    def get_state_of_subtopic(self, subtopic: str) -> float:
+        return self._subtopics_tracking[subtopic]
+
+    def get_subtopic_tracking(self) -> Dict[str, float]:
+        return self._subtopics_tracking

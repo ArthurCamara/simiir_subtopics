@@ -15,7 +15,7 @@ class SubtopicLMGenerator(BaseQueryGenerator):
     """
 
     def __init__(self, stopword_file, background_file=[]):
-        super(SubtopicLMGenerator, self).__init__(stopword_file, background_file=background_file, allow_similar=True)
+        super(SubtopicLMGenerator, self).__init__(stopword_file, background_file=background_file)
 
         # As an extra, we also have one LM for each subtopic. They are initialized as the full background LM.
         self.subtopics_language_models = dict()
@@ -32,22 +32,26 @@ class SubtopicLMGenerator(BaseQueryGenerator):
         return self._generate_query_list_single_subtopic(search_context, search_context._last_subtopic)
 
     def update_model(self, search_context):
-        """Update background and subtopic language model after a query"""
-        snippet_text = self._get_snip_text(search_context)
-        snippet_text = self._check_terms(snippet_text)
+        """Update background and subtopic language model after a Relevant document.
+        Only uses the last document to update."""
+        document_text = self._get_document_text(search_context)
+        document_subtopic_text = self._get_document_text(search_context, subtopic=search_context.get_subtopic())
 
-        if snippet_text:
+        if document_text:
             topic_text = search_context.topic.get_topic_text()
-            subtopic_text = self.last_subtopic
+            subtopic_text = search_context.get_subtopic()
 
-            all_text = "{0} {1} {2}".format(topic_text, subtopic_text, snippet_text)
+            all_text = "{0} {1} {2}".format(topic_text, subtopic_text, document_text)
+            subtopic_rel_text = f"{topic_text} {subtopic_text} {document_subtopic_text}"
 
             term_counts = lm_methods.extract_term_dict_from_text(all_text, self._stopword_file)
+            term_counts_subtopic = lm_methods.extract_term_dict_from_text(subtopic_rel_text, self._stopword_file)
             language_model = LanguageModel(term_dict=term_counts)
+            subtopic_language_model = LanguageModel(term_dict=term_counts_subtopic)
 
             # Update subtopic LM
             smoothed_subtopic_language_model = SmoothedLanguageModel(
-                language_model, self.subtopics_language_models[subtopic_text]
+                subtopic_language_model, self.subtopics_language_models[subtopic_text]
             )
 
             # Update background LM
@@ -80,6 +84,25 @@ class SubtopicLMGenerator(BaseQueryGenerator):
         snippet_soup = BeautifulSoup(snippet_text, "html.parser")
 
         return snippet_soup.get_text()
+
+    def _get_document_text(self, search_context, subtopic=None):
+        document_list = search_context.get_all_examined_documents()
+        rel_text_list = []
+        doc_text = ""
+        for doc in document_list:
+            if doc.judgment > 0:
+                if subtopic and doc.subtopic == subtopic:
+                    rel_text_list.append("{0} {1}".format(doc.title, doc.content))
+                elif not subtopic:
+                    rel_text_list.append("{0} {1}".format(doc.title, doc.content))
+        if rel_text_list:
+            doc_text = " ".join(rel_text_list)
+
+        doc_soup = BeautifulSoup(doc_text, "html.parser")
+        return doc_soup.get_text()
+
+    def init_lm_subtopic(self, subtopic, search_context):
+        _ = self._generate_topic_language_model(search_context, subtopic)
 
     def _check_terms(self, text):
         if self.background_language_model is None:
@@ -187,7 +210,8 @@ class SubtopicLMGenerator(BaseQueryGenerator):
         return_terms = []
         observed_stems = []
 
-        # Hack - this should be an instance variable or something that can be shared between the title and description parts.
+        # Hack -
+        # this should be an instance variable or something that can be shared between the title and description parts.
         for terms in title_query_list:
             for term in terms[0].split():
                 stemmed_term = self._stem_term(term)

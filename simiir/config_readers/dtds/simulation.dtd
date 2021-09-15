@@ -19,6 +19,8 @@ Date:   2021-09-09
 <!ATTLIST output                  saveInteractionLog CDATA #REQUIRED>
 <!ATTLIST output                  saveRelevanceJudgments CDATA #REQUIRED>
 <!ATTLIST output                  trec_eval CDATA #REQUIRED>
+<!ATTLIST output                  saveLanguageModels CDATA #REQUIRED>
+<!ATTLIST output                  saveSubtopicTracking CDATA #REQUIRED>
 
 <!ELEMENT users                   (user, user*)>
 

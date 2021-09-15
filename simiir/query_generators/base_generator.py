@@ -100,8 +100,7 @@ class BaseQueryGenerator(object):
         Returns the next query - if one that hasn't been issued before is present.
         """
         # if self._query_list is None or len(self._query_list) == 0:
-        if self._query_list is None:
-            self._query_list = self.generate_query_list(search_context)
+        self._query_list = self.generate_query_list(search_context)
 
         # If query_limit is a positive integer, a query limit is enforced. So check the length.
         if search_context.query_limit > 0:
