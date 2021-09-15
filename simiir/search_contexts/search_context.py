@@ -522,7 +522,7 @@ class SearchContext(object):
             url: A url clicked by the agent
         """
         """{"topic":"Theory of mind" ,"url":"https://www.dictionary.com/browse/theory-of-mind"}"""
-        body = {"topic": self.topic, url: url}
+        body = {"topic": self.topic.title, "url": url}
         results = requests.get(url="http://localhost:5001/score", json=body).json()["mean"]
         subtopic_scores = defaultdict(lambda: [])
         for subtopic, score in results:
@@ -531,5 +531,5 @@ class SearchContext(object):
             first_level = subtopic_name.split("/")[1]
             subtopic_scores[first_level].append(float(score))
         # normalize results
-        for k, v in subtopic_scores:
+        for k, v in subtopic_scores.items():
             self._subtopics_tracking[k] += np.mean(v)

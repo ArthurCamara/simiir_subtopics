@@ -239,6 +239,8 @@ class SimulatedUser(object):
                 # self.__logger.log_action(Actions.MARK, status="CONSIDERED_RELEVANT", doc_id=document.doc_id)
                 self.__search_context.add_relevant_document(document)
                 judgment = True
+                # Update tracking of subtopics
+                self.__search_context.update_subtopics_tracker(document.id)
             else:
                 document.judgment = 0
                 self.__search_context.add_irrelevant_document(document)
