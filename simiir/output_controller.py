@@ -12,6 +12,7 @@ class OutputController(object):
         self.__base_directory = output_configuration["@baseDirectory"]
         self.__save_interaction_log_flag = output_configuration["@saveInteractionLog"]
         self.__save_relevance_judgments_flag = output_configuration["@saveRelevanceJudgments"]
+        self.__save_language_models_flag = output_configuration["@saveLanguageModels"]
         self.__trec_eval_flag = output_configuration["@trec_eval"]
 
         self.__save_config_log_flag = True
@@ -86,7 +87,16 @@ class OutputController(object):
         self.__save_relevance_judgments()
         self.__save_query_log()
         self.__save_simulation_config()
+        self.__save_language_models()
         self.__run_trec_eval()
+
+    def __save_language_models(self):
+        if not self.__save_language_models_flag:
+            return
+        language_models_filename = f"{self.__simulation_configuration.base_id}.lms"
+        language_models_filename = os.path.join(self.__base_directory, language_models_filename)
+
+        log_file = open(language_models_filename, "w")
 
     def __save_simulation_config(self):
         """
