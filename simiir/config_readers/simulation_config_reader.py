@@ -50,7 +50,7 @@ class SimulationConfigReader(BaseConfigReader):
             for static_option in self.__static:
                 if static_option not in self._config_dict:
                     raise ConfigReaderError(
-                        "Simulation configuration option '{0}' not found. Please check the SimulationConfigReader class for typos.".format(
+                        "Simulation configuration option '{0}' not found. Please check the SimulationConfigReader class for typos.".format(  # noqa: E501
                             static_option
                         )
                     )

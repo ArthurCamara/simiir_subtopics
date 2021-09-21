@@ -34,6 +34,7 @@ class SimulationComponentGenerator(BaseComponentGenerator):
 
         # Create the user object - by loading the specified file into a UserConfigReader, then obtaining its components.
         user_config_file = self._config_dict["user"]["@configurationFile"]
+
         self.user = UserConfigReader(user_config_file).get_component_generator(self)
 
         # Creates a "base ID" for the saving of files, comprised of different component IDs

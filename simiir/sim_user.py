@@ -117,7 +117,6 @@ class SimulatedUser(object):
         self.__search_context.set_action(action)
 
         # Now call the appropriate method to perform the action.
-        # print(action)
         self.__action_value = action_mapping[action]()
 
     def __do_subtopic(self):

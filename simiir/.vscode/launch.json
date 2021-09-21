@@ -19,7 +19,7 @@
             "console": "integratedTerminal",
             "program": "run_simiir.py",
             "args": [
-                "../example_sims/subtopics_bing_simulation.xml"
+                "../simulations/GreedySmartSubtopicPicker_10_0.xml"
             ]
         }
     ]

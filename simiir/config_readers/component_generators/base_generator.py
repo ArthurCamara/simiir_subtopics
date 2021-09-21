@@ -72,7 +72,6 @@ class BaseComponentGenerator(object):
                 # For any component attributes (e.g. Topic, SearchContext)...add to kwargs!
                 for attribute_reference in components:
                     kwargs[attribute_reference[0]] = attribute_reference[1]
-
                 reference = available_class[1](**kwargs)
 
                 # If any attributes for the new object are required, now we pass them.
@@ -104,7 +103,8 @@ class BaseComponentGenerator(object):
         for module in modules:
             module_references.append(importlib.import_module(module))
 
-        # Now loop through each module, looking at the classes within it - and then append each class to a list of valid classes.
+        # Now loop through each module, looking at the classes within it - and then append each class to a list of
+        #   valid classes.
         for module in module_references:
             for name, obj in inspect.getmembers(module):
                 if inspect.isclass(obj):

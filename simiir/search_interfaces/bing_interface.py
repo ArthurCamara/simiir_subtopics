@@ -1,4 +1,5 @@
 from typing import Dict, List
+from requests.models import HTTPError
 from requests.sessions import HTTPAdapter
 from simiir.search_interfaces import Document
 from simiir.search_interfaces.base_interface import BaseSearchInterface
@@ -137,7 +138,23 @@ class BingSearchInterface(BaseSearchInterface):
         """
 
         query.top = top
-        bing_response = self._send_bing_request(query)
+
+        # Retry bing a few times, with increasing waiting times betweem the calls.
+        patience = 2
+        attempts = 0
+        wait_time = 2
+        while attempts <= patience:
+            try:
+                bing_response = self._send_bing_request(query)
+                break
+            except HTTPError:  # Wait and try again. Until we run out of patience.
+                print(f"Waiting for {wait_time}")
+                time.sleep(wait_time)
+                wait_time *= 2
+                attempts += 1
+        if attempts > patience:
+            raise HTTPError
+
         response = self._parse_bing_result(query, bing_response)
 
         self._last_query = query
@@ -174,16 +191,7 @@ class BingSearchInterface(BaseSearchInterface):
 
         self.params["q"] = self.query_template.format(query_str)
         response = requests.get(self.search_url, headers=self.headers, params=self.params)
-        try:
-            response.raise_for_status()
-        except requests.HTTPError:  # Wait a second and try again
-            time.sleep(1)
-            response = requests.get(
-                self.search_url,
-                headers=self.headers,
-                params=self.params,
-            )
-            response.raise_for_status()
+        response.raise_for_status()
 
         # Store SERP in REDIS
         if self.__redis_in_use:
@@ -234,11 +242,11 @@ class BingSearchInterface(BaseSearchInterface):
         s.mount("https://", adapter)
         s.mount("http://", adapter)
         try:
-            page_content = s.get(url, timeout=5).text
+            page_content = s.get(url, timeout=1).text
         except (requests.ConnectionError, requests.exceptions.TooManyRedirects, requests.exceptions.ReadTimeout):
             try:
-                time.sleep(1)
-                page_content = s.get(url, timeout=5).text
+                time.sleep(0.5)
+                page_content = s.get(url, timeout=1).text
             except (requests.ConnectionError, requests.exceptions.TooManyRedirects, requests.exceptions.ReadTimeout):
                 log.warn("Could not fetch page {}".format(url))
                 return ""

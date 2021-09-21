@@ -532,7 +532,7 @@ class SearchContext(object):
             results = requests.get(url="http://localhost:5001/score", json=body).json()["mean"]
         for subtopic, score in results:
             # decode subtopic
-            parsed_name = urllib.parse.unquote(subtopic.split("/")[1])
+            parsed_name = urllib.parse.unquote(subtopic.split("/")[1]).replace("-", " ")
             self._subtopics_tracking[parsed_name] += score
 
     def get_state_of_subtopic(self, subtopic: str) -> float:

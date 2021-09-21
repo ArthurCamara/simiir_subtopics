@@ -6,8 +6,14 @@ class BaseTextClassifier(object):
     """ """
 
     def __init__(
-        self, topic, search_context, stopword_file=[], background_file=[]
-    ):  # Refactor; is this the best way to pass in details?
+        self,
+        topic,
+        search_context,
+        stopword_file=[],
+        background_file=[],
+        full_background: bool = False,
+    ):
+        # Refactor; is this the best way to pass in details?
         self._stopword_file = stopword_file
         self._background_file = background_file
         self._topic = topic
@@ -18,6 +24,15 @@ class BaseTextClassifier(object):
 
         if self._background_file:
             self.read_in_background(self._background_file)
+        # else:  # Construct a LM from a text input instead
+        #     lines = [x for x in topic.content.split("\n") if len(x.strip()) > 0]
+        #     if not full_background:
+        #         # If we are not using the full background, only the first line, other than topic title, is considered.
+        #         full_text = " ".join(lines[:2])
+        #     else:
+        #         full_text = " ".join(lines)
+        #     document_term_counts = lm_methods.extract_term_dict_from_text(full_text, self._stopword_file)
+        #     self.background_language_model = LanguageModel(term_dict=document_term_counts)
 
     def is_relevant(self, document):
         """

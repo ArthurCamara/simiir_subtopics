@@ -118,7 +118,7 @@ class OutputController(object):
         language_models_filename = os.path.join(self.__base_directory, language_models_filename)
 
         with open(language_models_filename, "w") as outf:
-            outf.write(json.dumps(self.__language_model))
+            outf.write(json.dumps(self.__language_models))
 
     def __save_subtopic_tracking(self):
         if not self.__save_subtopic_tracking_flag:

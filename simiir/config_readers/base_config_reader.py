@@ -95,7 +95,8 @@ class BaseConfigReader(object):
     @abc.abstractmethod
     def _validate_config(self):
         """
-        An abstract method. Implement this to ensure that the settings supplied in the configuration file are correct for the given configuration schema (e.g. correct types).
+        An abstract method. Implement this to ensure that the settings supplied in the configuration file are
+            correct for the given configuration schema (e.g. correct types).
         This is run under the assumption that the XML is well formed.
         """
         pass
