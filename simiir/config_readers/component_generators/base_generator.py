@@ -59,8 +59,6 @@ class BaseComponentGenerator(object):
         selected_class = config_details["@class"]
         available_classes = self.__get_available_classes(package)
         attributes = self.__get_attributes(config_details)
-        if "LMTextClassifier" in selected_class:
-            print("DEBUG")
 
         for available_class in available_classes:
             if available_class[0] == selected_class:
