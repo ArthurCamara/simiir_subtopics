@@ -13,7 +13,15 @@ log = logging.getLogger("lm_classifer.LMTextClassifier")
 class LMTextClassifier(BaseTextClassifier):
     """ """
 
-    def __init__(self, topic, search_context, stopword_file=[], background_file=[], clean: bool = False):
+    def __init__(
+        self,
+        topic,
+        search_context,
+        stopword_file=[],
+        background_file=[],
+        clean: bool = False,
+        full_background=False,
+    ):
         """ """
         super(LMTextClassifier, self).__init__(topic, search_context, stopword_file, background_file)
         self.alpha = 1.0
@@ -25,6 +33,7 @@ class LMTextClassifier(BaseTextClassifier):
         self.updating = False
         self.title_weight = 1
         self.title_only = False
+        self.full_background = full_background
         self.make_topic_language_model()
         self.clean = clean
 
@@ -34,6 +43,11 @@ class LMTextClassifier(BaseTextClassifier):
         Note that the attribute title_weight influences the weighting of the title.
         """
         title_text = "{0} ".format(self._topic.title) * self.title_weight
+        if not self.full_background:
+            lines = [x.strip() for x in self._topic.content.split("\n") if len(x) > 1]
+            t_text = "\n".join(lines[:2])
+            topic_text = "{0} {1}".format(title_text, t_text)
+            return topic_text
         topic_text = "{0} {1}".format(title_text, self._topic.content)
         return topic_text
 

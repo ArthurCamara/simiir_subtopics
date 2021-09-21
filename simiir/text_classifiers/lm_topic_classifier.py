@@ -4,6 +4,7 @@ from ifind.common.language_model import LanguageModel
 from simiir.text_classifiers.lm_classifier import LMTextClassifier
 from simiir.utils.lm_methods import extract_term_dict_from_text
 import logging
+from typing import Union, List
 
 log = logging.getLogger("lm_classifer.TopicBasedLMTextClassifier")
 
@@ -17,19 +18,20 @@ class TopicBasedLMTextClassifier(LMTextClassifier):
         self,
         topic,
         search_context,
-        stopword_file=[],
-        background_file=[],
-        topic_weighting=1,
-        topic_background_weighting=1,
-        document_weighting=1,
-        clean=False,
+        stopword_file: Union[str, List[str]] = [],
+        background_file: Union[str, List[str]] = [],
+        topic_weighting: int = 1,
+        topic_background_weighting: int = 1,
+        document_weighting: int = 1,
+        clean: bool = False,
+        full_background: bool = True,
     ):
         self.topic_weighting = topic_weighting  # Weighting score for topic text
         self.topic_background_weighting = topic_background_weighting  # Weighting score for background topic text
         self.document_weighting = document_weighting  # Weighting score for examined snippet text
 
         super(TopicBasedLMTextClassifier, self).__init__(
-            topic, search_context, stopword_file, background_file, clean=clean
+            topic, search_context, stopword_file, background_file, clean=clean, full_background=full_background
         )
 
     def make_topic_language_model(self):
