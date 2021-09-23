@@ -11,12 +11,13 @@ class SimulationConfigReader(BaseConfigReader):
     This includes a UserConfigReader - which in turn contains components relevant to a simulated user.
     """
 
-    def __init__(self, config_filename=None):
+    def __init__(self, config_filename=None, mock: bool = False):
         super(SimulationConfigReader, self).__init__(config_filename=config_filename, dtd_filename="simulation.dtd")
 
         # Specify the options which do not change over an interation, and those which do.
         self.__static = ["output", "searchInterface"]
         self.__iterables = ["topics", "users"]
+        self.mock = mock
 
         self.__calculate_iterations()
 
@@ -94,7 +95,10 @@ class SimulationConfigReader(BaseConfigReader):
             get_type(config_type)
 
         # Calculates the cartesian product of all the lists to iterate to generate permutations.
+
         self.__iterables = [dict(zip(iterables, v)) for v in product(*iterables.values())]
+        if self.mock:
+            self.__iterables = [self.__iterables[0]]
         self.__iterables_counter = 0
 
     def _validate_config(self):

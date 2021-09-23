@@ -15,13 +15,12 @@
             "name": "run_simiir",
             "type": "python",
             "request": "launch",
-            "cwd": "/ssd2/arthur/simmir_py2/simiir/simiir",
-            "console": "integratedTerminal",
             "program": "run_simiir.py",
+            "cwd": "/ssd2/arthur/simiir/simiir",
             "args": [
-                "../simulations/GreedySmartSubtopicPicker_10_0.xml",
-                "--mock"
-            ]
+                "../example_sims/trec_bm25_simulation.xml",
+                "--mockup"
+            ],
         }
     ]
 }

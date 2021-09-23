@@ -20,7 +20,7 @@
         <documentClassifier class="TopicBasedLMTextClassifier">
             <attribute name="clean" type="boolean" value="1" is_argument="true" />
             <attribute name="stopword_file" type="string" value="../example_data/terms/stopwords.txt" is_argument="true" />
-            <attribute name="threshold" type="float" value="0.2" is_argument="false" />
+            <attribute name="threshold" type="float" value="-10.0" is_argument="false" />
             <attribute name="lam" type="float" value="0.8" is_argument="false" />
             <attribute name="updating" type="boolean" value="true" is_argument="false" />
             <attribute name="update_method" type="integer" value="1" is_argument="false" />

@@ -8,19 +8,25 @@ import logging
 import time
 
 
-def main(config_filename):
+def main(config_filename, mock=False):
     """
     The main simulation!
     For every configuration permutation, create a Simulated user object, and run the simulation (the while loop).
     Then save, report, and repeat ad naseum.
     """
     logging.basicConfig(filename="sim.log", level=logging.DEBUG)
-    config_reader = SimulationConfigReader(config_filename)
+    config_reader = SimulationConfigReader(config_filename, mock=mock)
 
     # For each combination of the iterables (i.e. each user type vs topic)
     for configuration in config_reader:
+        # Check for output file
+        log_file = configuration.base_id + ".log"
+        log_file = os.path.join(configuration.output._OutputController__base_directory, log_file)
+        if os.path.isfile(log_file):
+            logging.warning(f"Already found results for {configuration.base_id}. Cowardly skipping it")
+            continue
         start_time = time.time()
-        user = SimulatedUser(configuration)  # Load user
+        user = SimulatedUser(configuration, mock=mock)  # Load user
         progress = ProgressIndicator(configuration)
         # configuration.output.display_config()
 
@@ -45,7 +51,9 @@ def usage(script_name):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2 or len(sys.argv) > 2:
+    if len(sys.argv) < 2 or len(sys.argv) > 3:
         usage(sys.argv[0])
+    elif len(sys.argv) == 3 and sys.argv[2] == "--mock":
+        main(sys.argv[1], True)
     else:
         main(sys.argv[1])
