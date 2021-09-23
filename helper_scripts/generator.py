@@ -681,7 +681,7 @@ def get_attribute_combinations(config_object):
     return (list(itertools.product(*attribute_categories_nested)), duplicates)
 
 
-def main(output_dir, experiment_base_dir, write=False):
+def main(output_dir, experiment_base_dir, write=True):
     all_combinations = generate_combinations()
     component_combinations = generate_component_combinations(all_combinations)
     helper_json = {}
@@ -743,5 +743,6 @@ if __name__ == '__main__':
     
     output_dir = sys.argv[1]
     experiment_base_dir = sys.argv[2]
+    write = True  # Change this to False if you just want to see a list of simulations that will be created, and not to actually make the directories!
 
-    sys.exit(main(output_dir, experiment_base_dir))
+    sys.exit(main(output_dir, experiment_base_dir, write))
