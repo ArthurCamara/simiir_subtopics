@@ -1,0 +1,26 @@
+<simulationConfiguration id="{simulationID}">
+
+     <output baseDirectory="{outputPath}"
+             saveInteractionLog="true"
+             saveRelevanceJudgments="true"
+             trec_eval="false"
+             saveLanguageModels="true"
+             saveSubtopicTracking="true"/>
+
+     <topics>
+         {topics}
+     </topics>
+
+     <users>
+         {users}
+     </users>
+
+     <searchInterface class="BingSearchInterface">
+         <attribute name="private_key" type="string" value="{bing_key}" is_argument="true" />
+         <attribute name="search_url" type="string" value="https://api.bing.microsoft.com/v7.0/search" is_argument="true" />
+         <attribute name="mkt" type="string" value="en-US" is_argument="true" />
+         <attribute name="redis_db" type="integer" value="10" is_argument="true" />
+         <attribute name="n_results" type="integer" value="10" is_argument="true" />
+     </searchInterface>
+
+ </simulationConfiguration>
