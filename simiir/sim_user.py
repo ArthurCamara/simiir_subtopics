@@ -139,7 +139,6 @@ class SimulatedUser(object):
             self.__logger.queries_exhausted()
             return False
 
-        # Set next query to be the title of the subtopic
         if new_subtopic not in self.__search_context._used_subtopics:
             self.__search_context._new_subtopic = True
         else:
@@ -232,17 +231,14 @@ class SimulatedUser(object):
             # This snippet has not been previously seen; check quality of snippet. Does it show some form of relevance?
             # If so, we return True - and if not, we return False, which moves the simulator to the next step.
 
-            # print 'snippet', snippet.doc_id, self.__snippet_classifier.is_relevant(snippet)
-
             if self.__snippet_classifier.is_relevant(snippet):
-                snippet.judgment = 1
+                # snippet.judgment = 1
                 self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_RELEVANT", snippet=snippet)
                 judgment = True
             else:
                 snippet.judgment = 0
                 self.__logger.log_action(Actions.SNIPPET, status="SNIPPET_NOT_RELEVANT", snippet=snippet)
 
-            self.__snippet_classifier.update_model(self.__search_context)
         return judgment
 
     def __do_assess_document(self):
@@ -254,11 +250,13 @@ class SimulatedUser(object):
             document = self.__search_context.get_current_document()
             self.__logger.log_action(Actions.DOC, status="EXAMINING_DOCUMENT", doc_id=document.doc_id)
 
-            # print 'document', document.doc_id, self.__document_classifier.is_relevant(document)
-
             if self.__document_classifier.is_relevant(document):
                 document.judgment = 1
-                # self.__logger.log_action(Actions.MARK, status="CONSIDERED_RELEVANT", doc_id=document.doc_id)
+                # mark snippet as relevant, so their LM is also updated.
+                snippet = self.__search_context.get_current_snippet()
+                snippet.judgment = 1
+
+                self.__logger.log_action(Actions.MARK, status="CONSIDERED_RELEVANT", doc_id=document.doc_id)
                 self.__search_context.add_relevant_document(document)
                 judgment = True
                 # Update tracking of subtopics
@@ -267,10 +265,12 @@ class SimulatedUser(object):
             else:
                 document.judgment = 0
                 self.__search_context.add_irrelevant_document(document)
-                # self.__logger.log_action(Actions.MARK, status="CONSIDERED_NOT_RELEVANT", doc_id=document.doc_id)
+                self.__logger.log_action(Actions.MARK, status="CONSIDERED_NOT_RELEVANT", doc_id=document.doc_id)
                 judgment = False
 
+            # Also update snippet classifier at the same time, since they BOTH got relevancy changed.
             self.__document_classifier.update_model(self.__search_context)
+            self.__snippet_classifier.update_model(self.__search_context)
 
         return judgment
 

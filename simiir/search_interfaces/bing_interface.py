@@ -210,6 +210,8 @@ class BingSearchInterface(BaseSearchInterface):
 
         rank_counter = 1
 
+        if "webPages" not in bing_results:
+            return response
         for r in bing_results["webPages"]["value"]:
             self._doc_titles[r["url"]] = self.__clean_string(r["name"])
             clean_snippet = self.__clean_string(r["snippet"].replace("<b>", "").replace("</b>", ""))

@@ -23,12 +23,12 @@
     </subtopicDecisionMaker>
 
     <logger class="FixedCostLogger">
-		<attribute name="time_limit" type="integer" value="{timeLimit}" is_argument="true" />
-		<attribute name="query_cost" type="integer" value="{queryCost}" is_argument="true" />
-		<attribute name="document_cost" type="integer" value="{documentCost}" is_argument="true" />
-		<attribute name="snippet_cost" type="integer" value="{snippetCost}" is_argument="true" />
-		<attribute name="serp_results_cost" type="integer" value="{serpCost}" is_argument="true" />
-		<attribute name="mark_document_cost" type="integer" value="{markCost}" is_argument="true" />
+		<attribute name="time_limit" type="float" value="{timeLimit}" is_argument="true" />
+		<attribute name="query_cost" type="float" value="{queryCost}" is_argument="true" />
+		<attribute name="document_cost" type="float" value="{documentCost}" is_argument="true" />
+		<attribute name="snippet_cost" type="float" value="{snippetCost}" is_argument="true" />
+		<attribute name="serp_results_cost" type="float" value="{serpCost}" is_argument="true" />
+		<attribute name="mark_document_cost" type="float" value="{markCost}" is_argument="true" />
 	</logger>
 
 	<searchContext class="SearchContext">

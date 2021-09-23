@@ -1,3 +1,4 @@
+from search_contexts.search_context import SearchContext
 from ifind.common.language_model import LanguageModel
 from ifind.common.smoothed_language_model import SmoothedLanguageModel
 from ifind.common.query_generation import SingleQueryGeneration
@@ -28,7 +29,7 @@ class SubtopicLMGenerator(BaseQueryGenerator):
         # If it's a new subtopic, a single query is returned.
         if search_context._new_subtopic:
             search_context._new_subtopic = False
-            return [[search_context.topic.title + " " + search_context._last_subtopic]]
+            return [[search_context.topic.title.lower() + " " + search_context._last_subtopic.lower()]]
         return self._generate_query_list_single_subtopic(search_context, search_context._last_subtopic)
 
     def update_model(self, search_context):
@@ -116,7 +117,7 @@ class SubtopicLMGenerator(BaseQueryGenerator):
 
         return " ".join(checked_term_list)
 
-    def _generate_topic_language_model(self, search_context, subtopic):
+    def _generate_topic_language_model(self, search_context: SearchContext, subtopic: str):
         # if no subtopic, pick from the standart language model.
         if subtopic is None:
             if self.background_language_model is None:
@@ -132,7 +133,7 @@ class SubtopicLMGenerator(BaseQueryGenerator):
         # Initialize language model for subtopic
         if subtopic not in self.subtopics_language_models:
             topic = search_context.topic
-            topic_text = "{0} {1} {2}".format(topic.title, subtopic, topic.content)
+            topic_text = "{0} {1}".format(subtopic, topic.content)
             document_term_counts = lm_methods.extract_term_dict_from_text(topic_text, self._stopword_file)
 
             subtopic_language_model = LanguageModel(term_dict=document_term_counts)
@@ -145,12 +146,10 @@ class SubtopicLMGenerator(BaseQueryGenerator):
         Copy of tri_term_generator.generate_query_list
         """
         self.__description_cutoff = 0
-
         topic = search_context.topic
         topic_title = topic.title
         topic_description = topic.content
         subtopic_language_model = self._generate_topic_language_model(search_context, subtopic)
-
         # Generate a series of query terms from the titles (topic and subtopic), and then rank the generated terms.
         title_generator = SingleQueryGeneration(minlen=3, stopwordfile=self._stopword_file)
         title_query_list = title_generator.extract_queries_from_text(topic_title + " " + subtopic)

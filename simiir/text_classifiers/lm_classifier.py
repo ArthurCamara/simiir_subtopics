@@ -36,6 +36,7 @@ class LMTextClassifier(BaseTextClassifier):
         self.full_background = full_background
         self.make_topic_language_model()
         self.clean = clean
+        self.stopwords = {x.strip() for x in open(self._stopword_file).readlines()}
 
     def _make_topic_text(self, **kwargs):
         """
@@ -125,16 +126,18 @@ class LMTextClassifier(BaseTextClassifier):
             title_stripped = clean_html(document.title)
             content_stripped = clean_html(document.content)
         else:
-            title_stripped = document.title.split()
-            content_stripped = document.content.split()
+            title_stripped = [x for x in document.title.split() if x not in self.stopwords]
+            content_stripped = [x for x in document.content.split() if x not in self.stopwords]
 
         for term in title_stripped:
-            score = score + self.get_term_score(term)
+            t_score = self.get_term_score(term)
+            score = score + t_score
             count = count + 1.0
 
         if not self.title_only:
             for term in content_stripped:
-                score = score + self.get_term_score(term)
+                t_score = self.get_term_score(term)
+                score = score + t_score
                 count = count + 1.0
 
         self.doc_score = score / count
@@ -158,7 +161,7 @@ class LMTextClassifier(BaseTextClassifier):
 
         term_score = self.lam * topic_term_prob + (1.0 - self.lam) * background_term_prob
         if term_score > 0.0 and background_term_prob > 0.0:
-            return math.log(term_score / background_term_prob, 2.0)
+            return max(math.log(term_score / background_term_prob, 2.0), 0.0)
         else:
             return 0.0
 
