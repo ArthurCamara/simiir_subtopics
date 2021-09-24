@@ -22,6 +22,8 @@ def main(config_filename, mock=False):
         # Check for output file
         log_file = configuration.base_id + ".log"
         log_file = os.path.join(configuration.output._OutputController__base_directory, log_file)
+        if os.path.isfile(log_file):
+            print(f"Cowardly refusing to re-reun {configuration.base_id}. Already found it")
         start_time = time.time()
         user = SimulatedUser(configuration)  # Load user
         progress = ProgressIndicator(configuration)
