@@ -149,7 +149,7 @@ subtopic_strategies = {
     },
     "GREEDYSMART": {
         "id": 4,
-        "className": "GreedySmart",
+        "className": "GreedySmartSubtopicPicker",
         "attributes": [
             # {'name': 'limit', 'type': 'float', 'value': '1.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "2.0", "is_argument": "true"},
@@ -194,6 +194,7 @@ stopping_strategies = {
             # {"name": "depth", "type": "integer", "value": "18", "is_argument": "true"},
             # {"name": "depth", "type": "integer", "value": "21", "is_argument": "true"},
             # {"name": "depth", "type": "integer", "value": "24", "is_argument": "true"},
+            # {"name": "depth", "type": "integer", "value": "10", "is_argument": "true"}
         ],
     },
     # "SS2": {
@@ -343,12 +344,12 @@ document_decision_makers = {
             # {"name": "threshold", "type": "float", "value": "0.7", "is_argument": "false"},
             {"name": "lam", "type": "float", "value": "0.1", "is_argument": "false"},
             {"name": "lam", "type": "float", "value": "0.2", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.3", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.4", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.5", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.6", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.7", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.8", "is_argument": "false"},
+            # {"name": "lam", "type": "float", "value": "0.3", "is_argument": "false"},
+            # {"name": "lam", "type": "float", "value": "0.4", "is_argument": "false"},
+            # {"name": "lam", "type": "float", "value": "0.5", "is_argument": "false"},
+            # {"name": "lam", "type": "float", "value": "0.6", "is_argument": "false"},
+            # {"name": "lam", "type": "float", "value": "0.7", "is_argument": "false"},
+            # {"name": "lam", "type": "float", "value": "0.8", "is_argument": "false"},
         ],
     },
 }
