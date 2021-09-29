@@ -52,6 +52,7 @@ class SimulatedUser(object):
             self.__do_action(Actions.SERP)
 
         def after_serp():
+            # TODO: LOG LM HERE.
             if self.__action_value:
                 self.__do_action(Actions.SNIPPET)
             else:
@@ -74,7 +75,7 @@ class SimulatedUser(object):
             This condition will always be True; we won't get here unless the document has been successfully marked!
             After the document has been marked, the user must decide whether (s)he wants to look at the subsequent snippet, or issue another query. # noqa: E501
             """
-            # Update  LMs after marking a doc as relevant.
+
             self.__do_action(self.__do_decide())
 
         def after_none():
@@ -130,6 +131,7 @@ class SimulatedUser(object):
         if new_subtopic is False:
             # If there is no new subtopic, we are done. And we end the simulation
             # Save LMs one more time
+            self.__query_generator.update_model(self.__search_context)  # Update LM one last time
             self.__output_controller.log_language_model(self.__query_generator.background_language_model, "GLOBAL")
             for subtopic in self.__search_context.topic.subtopics:
                 self.__output_controller.log_language_model(
@@ -248,7 +250,7 @@ class SimulatedUser(object):
         judgment = False
         if self.__search_context.get_last_query():
             document = self.__search_context.get_current_document()
-            self.__logger.log_action(Actions.DOC, status="EXAMINING_DOCUMENT", doc_id=document.doc_id)
+            self.__logger.log_action(Actions.DOC, status="EXAMINING_DOCUMENT", doc_id=document.id)
 
             if self.__document_classifier.is_relevant(document):
                 document.judgment = 1
@@ -256,7 +258,7 @@ class SimulatedUser(object):
                 snippet = self.__search_context.get_current_snippet()
                 snippet.judgment = 1
 
-                self.__logger.log_action(Actions.MARK, status="CONSIDERED_RELEVANT", doc_id=document.doc_id)
+                self.__logger.log_action(Actions.MARK, status="CONSIDERED_RELEVANT", doc_id=document.id)
                 self.__search_context.add_relevant_document(document)
                 judgment = True
                 # Update tracking of subtopics
@@ -265,7 +267,7 @@ class SimulatedUser(object):
             else:
                 document.judgment = 0
                 self.__search_context.add_irrelevant_document(document)
-                self.__logger.log_action(Actions.MARK, status="CONSIDERED_NOT_RELEVANT", doc_id=document.doc_id)
+                self.__logger.log_action(Actions.MARK, status="CONSIDERED_NOT_RELEVANT", doc_id=document.id)
                 judgment = False
 
             # Also update snippet classifier at the same time, since they BOTH got relevancy changed.
@@ -281,8 +283,10 @@ class SimulatedUser(object):
         judgement_message = {0: "CONSIDERED_NOT_RELEVANT", 1: "CONSIDERED_RELEVANT"}
 
         document = self.__search_context.get_current_document()
+        snippet = self.__search_context.get_current_snippet()
+        snippet.judgment = 1
 
-        self.__logger.log_action(Actions.MARK, status=judgement_message[document.judgment], doc_id=document.doc_id)
+        self.__logger.log_action(Actions.MARK, status=judgement_message[document.judgment], doc_id=document.id)
 
         return True
 
@@ -300,5 +304,4 @@ class SimulatedUser(object):
             self.__output_controller.log_info(info_type="SERP_END_REACHED")
             return Actions.SUBTOPIC
 
-        # TODO: adapt decision maker to pick subtopic instead of query
         return self.__decision_maker.decide()

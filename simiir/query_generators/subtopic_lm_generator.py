@@ -33,8 +33,7 @@ class SubtopicLMGenerator(BaseQueryGenerator):
         return self._generate_query_list_single_subtopic(search_context, search_context._last_subtopic)
 
     def update_model(self, search_context):
-        """Update background and subtopic language model after a Relevant document.
-        Only uses the last document to update."""
+        """Update background and subtopic language."""
         document_text = self._get_document_text(search_context)
         document_subtopic_text = self._get_document_text(search_context, subtopic=search_context.get_subtopic())
 

@@ -36,7 +36,7 @@ class OutputController(object):
 
     def log_subtopic_tracking(self, subtopic_tracking):
         """Saves locally how the subtopic tracking is evolving over time"""
-        self._subtopic_tracking.append(subtopic_tracking)
+        self._subtopic_tracking.append(dict(subtopic_tracking))
 
     def log_language_model(self, lm, name):
         """Saves locally a language model with a given name.

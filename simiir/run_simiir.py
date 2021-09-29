@@ -20,14 +20,12 @@ def main(config_filename, mock=False):
     # For each combination of the iterables (i.e. each user type vs topic)
     for configuration in config_reader:
         # Check for output file
-        log_file = configuration.base_id + ".log"
-        log_file = os.path.join(configuration.output._OutputController__base_directory, log_file)
-        if os.path.isfile(log_file):
-            print(f"Cowardly refusing to re-reun {configuration.base_id}. Already found it")
+        # log_file = configuration.base_id + ".log"
+        # log_file = os.path.join(configuration.output._OutputController__base_directory, log_file)
         start_time = time.time()
+        print(start_time)
         user = SimulatedUser(configuration)  # Load user
         progress = ProgressIndicator(configuration)
-        # configuration.output.display_config()
 
         while not configuration.user.logger.is_finished():
             progress.update()  # Update the progress indicator in the terminal.

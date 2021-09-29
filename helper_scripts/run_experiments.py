@@ -1,5 +1,6 @@
 import os
 import sys
+from tqdm.auto import tqdm
 import time
 import subprocess
 from time import sleep
@@ -32,6 +33,7 @@ def run_simulations(
     Runs the simulations based on the list provided.
     Once complete, this function terminates the process.
     """
+    pbar = tqdm(desc="running simulations", total=len(simulation_list) // 2, ncols=80)
     os.chdir(simulation_root_dir)
 
     commands = simulation_list
@@ -50,11 +52,10 @@ def run_simulations(
         "subprime_mortgage_crisis",
         "theory_of_mind",
     ]
-
     stdout_file = open(stdout_filename, "w")
     stderr_file = open(stderr_filename, "w")
 
-    print("{0}: Ready to start".format(time.strftime("%c")))
+    tqdm.write("{0}: Ready to start".format(time.strftime("%c")))
 
     while True:
         active_processes = update_processes(active_processes)
@@ -67,10 +68,14 @@ def run_simulations(
             break
 
         # Checks if proccess has already ran before. Skip if true.
-        input_file = simulation_list[0]
+        input_file = commands[commands_position]
         output_path = input_file.replace("simulation.xml", "output/")
         covered = 0
         t_vars = [x.replace("vars-", "") for x in input_file.split("/")[5:-1]]
+        if t_vars[-1] != "l01":
+            commands_position += 1
+            continue
+
         f_part = f"{t_vars[0]}-{t_vars[1]}_{t_vars[2]}_{t_vars[3]}_{t_vars[4]}_{t_vars[5]}-{t_vars[6]}_{t_vars[7]}-{t_vars[8]}"  # noqa:E501
         for t in topics:
             log_file = f"{output_path}{f_part}-{t}-user-{f_part}.log"
@@ -79,17 +84,19 @@ def run_simulations(
             if open(log_file).readlines()[-7] == "INFO SUMMARY \n":
                 covered += 1
         if covered >= len(topics):
-            print(f"{time.strftime('%c')}: Skipping proccess {commands[commands_position]}. Already done.")
+            tqdm.write(f"{time.strftime('%c')}: Skipping proccess {commands[commands_position]}. Already done.")
+            pbar.update()
             commands_position += 1
             continue
 
-        print("{0}: Starting process {1}".format(time.strftime("%c"), commands[commands_position]))
+        tqdm.write(f"{time.strftime('%c')}: Starting process {commands[commands_position]}")
 
         pid = subprocess.Popen(
             ["python", "run_simiir.py", commands[commands_position]],
             stdout=stdout_file,
             stderr=stderr_file,
         )
+        pbar.update()
 
         active_processes.append(pid)
 

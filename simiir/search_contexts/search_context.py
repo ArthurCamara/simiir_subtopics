@@ -229,7 +229,7 @@ class SearchContext(object):
         Resets the appropriate counters for the next iteration; stores the previously examined
             snippets and documents for reference.
         """
-        if len(self._issued_queries) > 0:
+        if len(self._issued_queries) > 0:  # WARNING. IS IT BREAKING ANYTHING?
             #  If a query has been issued previously, store the snippets and documents examined for reference later on.
             self._depths.append((self._snippets_examined, self._documents_examined))
 

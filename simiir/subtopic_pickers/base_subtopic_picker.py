@@ -24,3 +24,7 @@ class BaseSubtopicPicker(object):
             if self._search_context.get_state_of_subtopic(s) < self.limit:
                 return False
         return True
+    
+    def get_next_undone(self):
+        """Get the next subtopic that is not yet done"""
+        pass
