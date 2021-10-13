@@ -1,0 +1,62 @@
+<userConfiguration id="user-run_5_sub2-l20_q13_ss1_se0_sn0-t10l01_doc0-l02">
+
+	<queryGenerator class="SubtopicLMGenerator">
+                        <attribute name="stopword_file" type="string" value="/ssd2/arthur/simmir_py2/simiir/example_data/terms/stopwords.txt" is_argument="true" />
+
+	</queryGenerator>
+
+	<textClassifiers>
+        <snippetClassifier class="TopicBasedLMTextClassifier">
+                        <attribute name="clean" type="boolean" value="true" is_argument="true" />
+            <attribute name="stopword_file" type="string" value="/ssd2/arthur/simmir_py2/simiir/example_data/terms/stopwords.txt" is_argument="true" />
+            <attribute name="updating" type="boolean" value="true" is_argument="false" />
+            <attribute name="update_method" type="integer" value="2" is_argument="false" />
+            <attribute name="background_file" type="string" value="/ssd2/arthur/simmir_py2/simiir/example_data/terms/vocab.txt" is_argument="true" />
+            <attribute name="full_background" type="boolean" value="1" is_argument="false" />
+            <attribute name="threshold" type="float" value="1.0" is_argument="false" />
+            <attribute name="lam" type="float" value="0.1" is_argument="false" />
+
+        </snippetClassifier>
+
+        <documentClassifier class="TopicBasedLMTextClassifier">
+                        <attribute name="clean" type="boolean" value="true" is_argument="true" />
+            <attribute name="stopword_file" type="string" value="/ssd2/arthur/simmir_py2/simiir/example_data/terms/stopwords.txt" is_argument="true" />
+            <attribute name="updating" type="boolean" value="true" is_argument="false" />
+            <attribute name="update_method" type="integer" value="1" is_argument="false" />
+            <attribute name="background_file" type="string" value="/ssd2/arthur/simmir_py2/simiir/example_data/terms/vocab.txt" is_argument="true" />
+            <attribute name="full_background" type="boolean" value="1" is_argument="false" />
+            <attribute name="threshold" type="float" value="0.0" is_argument="false" />
+            <attribute name="lam" type="float" value="0.2" is_argument="false" />
+
+        </documentClassifier>
+    </textClassifiers>
+
+     <stoppingDecisionMaker class="FixedDepthDecisionMaker">
+                     <attribute name="depth" type="integer" value="10" is_argument="true" />
+
+     </stoppingDecisionMaker>
+
+    <subtopicDecisionMaker class="RandomSubtopicPicker">
+                    <attribute name="limit" type="float" value="2.0" is_argument="true" />
+
+    </subtopicDecisionMaker>
+
+    <logger class="FixedCostLogger">
+		<attribute name="time_limit" type="float" value="2400" is_argument="true" />
+		<attribute name="query_cost" type="float" value="9.42" is_argument="true" />
+		<attribute name="document_cost" type="float" value="80" is_argument="true" />
+		<attribute name="snippet_cost" type="float" value="3" is_argument="true" />
+		<attribute name="serp_results_cost" type="float" value="2" is_argument="true" />
+		<attribute name="mark_document_cost" type="float" value="1.68" is_argument="true" />
+	</logger>
+
+	<searchContext class="SearchContext">
+		<attribute name="relevance_revision" type="integer" value="1" is_argument="false" />
+	</searchContext>
+
+	<serpImpression class="AlwaysTrueSERPImpression">
+        
+	</serpImpression>
+
+
+</userConfiguration>

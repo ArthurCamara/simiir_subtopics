@@ -1,0 +1,34 @@
+<simulationConfiguration id="run_4_sub3-l60_q13_ss1_se0_sn0-t00l01_doc0-l02">
+
+     <output baseDirectory="/ssd2/arthur/SALmulation/simulation_data_new/run_4_sub3/vars-l60/q13/ss1/se0/sn0/vars-t00l01/doc0/vars-l02/output"
+             saveInteractionLog="true"
+             saveRelevanceJudgments="true"
+             trec_eval="false"
+             saveLanguageModels="true"
+             saveSubtopicTracking="true"/>
+
+     <topics>
+         <topic id="ethics" filename="/ssd2/arthur/simmir_py2/simiir/example_data/topics/ethics.topic" subtopicsFilename="/ssd2/arthur/simmir_py2/simiir/example_data/subtopics/ethics.subtopics" />
+         <topic id="genetically_modified_organism" filename="/ssd2/arthur/simmir_py2/simiir/example_data/topics/genetically_modified_organism.topic" subtopicsFilename="/ssd2/arthur/simmir_py2/simiir/example_data/subtopics/genetically_modified_organism.subtopics" />
+         <topic id="noise-induced_hearing_loss" filename="/ssd2/arthur/simmir_py2/simiir/example_data/topics/noise-induced_hearing_loss.topic" subtopicsFilename="/ssd2/arthur/simmir_py2/simiir/example_data/subtopics/noise-induced_hearing_loss.subtopics" />
+         <topic id="subprime_mortgage_crisis" filename="/ssd2/arthur/simmir_py2/simiir/example_data/topics/subprime_mortgage_crisis.topic" subtopicsFilename="/ssd2/arthur/simmir_py2/simiir/example_data/subtopics/subprime_mortgage_crisis.subtopics" />
+         <topic id="radiocarbon_dating_considerations" filename="/ssd2/arthur/simmir_py2/simiir/example_data/topics/radiocarbon_dating_considerations.topic" subtopicsFilename="/ssd2/arthur/simmir_py2/simiir/example_data/subtopics/radiocarbon_dating_considerations.subtopics" />
+         <topic id="business_cycle" filename="/ssd2/arthur/simmir_py2/simiir/example_data/topics/business_cycle.topic" subtopicsFilename="/ssd2/arthur/simmir_py2/simiir/example_data/subtopics/business_cycle.subtopics" />
+         <topic id="irritable_bowel_syndrome" filename="/ssd2/arthur/simmir_py2/simiir/example_data/topics/irritable_bowel_syndrome.topic" subtopicsFilename="/ssd2/arthur/simmir_py2/simiir/example_data/subtopics/irritable_bowel_syndrome.subtopics" />
+         <topic id="theory_of_mind" filename="/ssd2/arthur/simmir_py2/simiir/example_data/topics/theory_of_mind.topic" subtopicsFilename="/ssd2/arthur/simmir_py2/simiir/example_data/subtopics/theory_of_mind.subtopics" />
+         
+     </topics>
+
+     <users>
+         <user configurationFile="/ssd2/arthur/SALmulation/simulation_data_new/run_4_sub3/vars-l60/q13/ss1/se0/sn0/vars-t00l01/doc0/vars-l02/user.xml" />
+     </users>
+
+     <searchInterface class="BingSearchInterface">
+         <attribute name="private_key" type="string" value="ad75f8f57d644d8bbc069fd0251d7c25" is_argument="true" />
+         <attribute name="search_url" type="string" value="https://api.bing.microsoft.com/v7.0/search" is_argument="true" />
+         <attribute name="mkt" type="string" value="en-US" is_argument="true" />
+         <attribute name="redis_db" type="integer" value="10" is_argument="true" />
+         <attribute name="n_results" type="integer" value="10" is_argument="true" />
+     </searchInterface>
+
+ </simulationConfiguration>
