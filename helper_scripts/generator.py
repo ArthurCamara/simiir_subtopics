@@ -33,22 +33,52 @@ shorthands = {
 }
 
 costs = {
-    "q": 8,  # Cost of issuing a query
+    "q": 9.42,  # Cost of issuing a query
     "serp": 2,  # Cost of examining a SERP (can be removed)
     "snip": 3,  # Cost of examining a snippet
-    "doc": 10,  # Cost of examining a document
+    "doc": 80,  # Cost of examining a document
     "mark": 1.68,  # Cost to mark a document
 }
 
 logger = {
     "className": "FixedCostLogger",
     "attributes": [
-        {"name": "time_limit", "type": "float", "value": f"{TIME_LIMIT}", "is_argument": "true"},
-        {"name": "query_cost", "type": "float", "value": f'{costs["q"]}', "is_argument": "true"},
-        {"name": "document_cost", "type": "float", "value": f'{costs["doc"]}', "is_argument": "true"},
-        {"name": "snippet_cost", "type": "float", "value": f'{costs["snip"]}', "is_argument": "true"},
-        {"name": "serp_results_cost", "type": "float", "value": f'{costs["serp"]}', "is_argument": "true"},
-        {"name": "mark_document_cost", "type": "float", "value": f'{costs["mark"]}', "is_argument": "true"},
+        {
+            "name": "time_limit",
+            "type": "float",
+            "value": f"{TIME_LIMIT}",
+            "is_argument": "true",
+        },
+        {
+            "name": "query_cost",
+            "type": "float",
+            "value": f'{costs["q"]}',
+            "is_argument": "true",
+        },
+        {
+            "name": "document_cost",
+            "type": "float",
+            "value": f'{costs["doc"]}',
+            "is_argument": "true",
+        },
+        {
+            "name": "snippet_cost",
+            "type": "float",
+            "value": f'{costs["snip"]}',
+            "is_argument": "true",
+        },
+        {
+            "name": "serp_results_cost",
+            "type": "float",
+            "value": f'{costs["serp"]}',
+            "is_argument": "true",
+        },
+        {
+            "name": "mark_document_cost",
+            "type": "float",
+            "value": f'{costs["mark"]}',
+            "is_argument": "true",
+        },
     ],
 }
 
@@ -100,15 +130,8 @@ subtopic_strategies = {
         "id": 1,
         "className": "GreedySubtopicPicker",
         "attributes": [
-            # {'name': 'limit', 'type': 'float', 'value': '1.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "2.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '3.0', 'is_argument': 'true'},
-            {"name": "limit", "type": "float", "value": "4.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '5.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "6.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '7.0', 'is_argument': 'true'},
-            {"name": "limit", "type": "float", "value": "8.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '9.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "10.0", "is_argument": "true"},
         ],
     },
@@ -116,18 +139,8 @@ subtopic_strategies = {
         "id": 2,
         "className": "RandomSubtopicPicker",
         "attributes": [
-            {"name": "seed", "type": "integer", "value": "42", "is_argument": "true"},
-            # {'name': 'seed', 'type': 'integer', 'value': '123', 'is_argument': 'true'},
-            # {'name': 'seed', 'type': 'integer', 'value': '51', 'is_argument': 'true'},
-            # {'name': 'limit', 'type': 'float', 'value': '1.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "2.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '3.0', 'is_argument': 'true'},
-            {"name": "limit", "type": "float", "value": "4.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '5.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "6.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '7.0', 'is_argument': 'true'},
-            {"name": "limit", "type": "float", "value": "8.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '9.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "10.0", "is_argument": "true"},
         ],
     },
@@ -135,15 +148,8 @@ subtopic_strategies = {
         "id": 3,
         "className": "ReverseGreedySubtopicPicker",
         "attributes": [
-            # {'name': 'limit', 'type': 'float', 'value': '1.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "2.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '3.0', 'is_argument': 'true'},
-            {"name": "limit", "type": "float", "value": "4.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '5.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "6.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '7.0', 'is_argument': 'true'},
-            {"name": "limit", "type": "float", "value": "8.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '9.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "10.0", "is_argument": "true"},
         ],
     },
@@ -151,15 +157,8 @@ subtopic_strategies = {
         "id": 4,
         "className": "GreedySmartSubtopicPicker",
         "attributes": [
-            # {'name': 'limit', 'type': 'float', 'value': '1.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "2.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '3.0', 'is_argument': 'true'},
-            {"name": "limit", "type": "float", "value": "4.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '5.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "6.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '7.0', 'is_argument': 'true'},
-            {"name": "limit", "type": "float", "value": "8.0", "is_argument": "true"},
-            # {'name': 'limit', 'type': 'float', 'value': '9.0', 'is_argument': 'true'},
             {"name": "limit", "type": "float", "value": "10.0", "is_argument": "true"},
         ],
     },
@@ -170,7 +169,12 @@ querying_strategies = {
         "id": "13",
         "className": "SubtopicLMGenerator",
         "attributes": [
-            {"name": "stopword_file", "type": "string", "value": f"{STOPWORD_FILE_PATH}", "is_argument": "true"},
+            {
+                "name": "stopword_file",
+                "type": "string",
+                "value": f"{STOPWORD_FILE_PATH}",
+                "is_argument": "true",
+            },
         ],
     },
 }
@@ -180,102 +184,9 @@ stopping_strategies = {
         "id": 1,
         "className": "FixedDepthDecisionMaker",
         "attributes": [
-            # {"name": "depth", "type": "integer", "value": "1", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "2", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "3", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "4", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "5", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "6", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "7", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "8", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "9", "is_argument": "true"},
             {"name": "depth", "type": "integer", "value": "10", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "15", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "18", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "21", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "24", "is_argument": "true"},
-            # {"name": "depth", "type": "integer", "value": "10", "is_argument": "true"}
         ],
     },
-    # "SS2": {
-    #     "id": 2,
-    #     "className": "TotalNonrelDecisionMaker",
-    #     "attributes": [
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "1", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "2", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "3", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "4", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "5", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "6", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "7", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "8", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "9", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "10", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "15", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "18", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "21", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "24", "is_argument": "true"},
-    #     ],
-    # },
-    # "SS3": {
-    #     "id": 3,
-    #     "className": "SequentialNonrelDecisionMaker",
-    #     "attributes": [
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "1", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "2", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "3", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "4", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "5", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "6", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "7", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "8", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "9", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "10", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "15", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "18", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "21", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "24", "is_argument": "true"},
-    #     ],
-    # },
-    # "SS4": {
-    #     "id": 4,
-    #     "className": "SatisfactionFrustrationCombinationDecisionMaker",
-    #     "attributes": [
-    #         {"name": "timeout_threshold", "type": "integer", "value": "300", "is_argument": "true"},
-    #         {"name": "relevant_threshold", "type": "integer", "value": "1", "is_argument": "true"},
-    #         {"name": "relevant_threshold", "type": "integer", "value": "2", "is_argument": "true"},
-    #         {"name": "relevant_threshold", "type": "integer", "value": "3", "is_argument": "true"},
-    #         {"name": "relevant_threshold", "type": "integer", "value": "4", "is_argument": "true"},
-    #         {"name": "relevant_threshold", "type": "integer", "value": "5", "is_argument": "true"},
-    #         {"name": "relevant_threshold", "type": "integer", "value": "6", "is_argument": "true"},
-    #         {"name": "relevant_threshold", "type": "integer", "value": "7", "is_argument": "true"},
-    #         {"name": "relevant_threshold", "type": "integer", "value": "8", "is_argument": "true"},
-    #         {"name": "relevant_threshold", "type": "integer", "value": "9", "is_argument": "true"},
-    #         {"name": "relevant_threshold", "type": "integer", "value": "10", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "1", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "2", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "3", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "4", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "5", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "6", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "7", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "8", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "9", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "10", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "15", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "18", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "21", "is_argument": "true"},
-    #         {"name": "nonrelevant_threshold", "type": "integer", "value": "24", "is_argument": "true"},
-    #     ],
-    # },
-    # 'SS': {
-    #     'id': 2,
-    #     'className': 'SequentialNonrelDecisionMakerSkip',
-    #     'attributes': [
-    #         {'name': 'nonrelevant_threshold', 'type': 'integer', 'value': '3', 'is_argument': 'true'},
-    #         {'name': 'nonrelevant_threshold', 'type': 'integer', 'value': '4', 'is_argument': 'true'},
-    #     ],
-    # },
 }
 
 serp_impressions = {"FIXED": {"id": 0, "className": "AlwaysTrueSERPImpression", "attributes": {}}}
@@ -285,36 +196,76 @@ snippet_decision_makers = {
         "id": "0",
         "className": "TopicBasedLMTextClassifier",
         "attributes": [
-            {"name": "clean", "type": "boolean", "value": "true", "is_argument": "true"},
-            {"name": "stopword_file", "type": "string", "value": f"{STOPWORD_FILE_PATH}", "is_argument": "true"},
-            {"name": "updating", "type": "boolean", "value": "true", "is_argument": "false"},
-            {"name": "update_method", "type": "integer", "value": "2", "is_argument": "false"},
+            {
+                "name": "clean",
+                "type": "boolean",
+                "value": "true",
+                "is_argument": "true",
+            },
+            {
+                "name": "stopword_file",
+                "type": "string",
+                "value": f"{STOPWORD_FILE_PATH}",
+                "is_argument": "true",
+            },
+            {
+                "name": "updating",
+                "type": "boolean",
+                "value": "true",
+                "is_argument": "false",
+            },
+            {
+                "name": "update_method",
+                "type": "integer",
+                "value": "2",
+                "is_argument": "false",
+            },
             {
                 "name": "background_file",
                 "type": "string",
                 "value": f"{BACKGROUND_MODEL_FILE_PATH}",
                 "is_argument": "true",
             },
-            {"name": "full_background", "type": "boolean", "value": "1", "is_argument": "false"},
-            # {"name": "full_background", "type": "boolean", "value": "0", "is_argument": "false"},
-            {"name": "threshold", "type": "float", "value": "0.0", "is_argument": "false"},
-            {"name": "threshold", "type": "float", "value": "0.1", "is_argument": "false"},
-            {"name": "threshold", "type": "float", "value": "0.2", "is_argument": "false"},
-            {"name": "threshold", "type": "float", "value": "0.3", "is_argument": "false"},
-            {"name": "threshold", "type": "float", "value": "0.4", "is_argument": "false"},
-            {"name": "threshold", "type": "float", "value": "0.5", "is_argument": "false"},
-            {"name": "threshold", "type": "float", "value": "0.6", "is_argument": "false"},
-            {"name": "threshold", "type": "float", "value": "0.7", "is_argument": "false"},
+            {
+                "name": "full_background",
+                "type": "boolean",
+                "value": "1",
+                "is_argument": "false",
+            },
+            {
+                "name": "threshold",
+                "type": "float",
+                "value": "0.0",
+                "is_argument": "false",
+            },
+            {
+                "name": "threshold",
+                "type": "float",
+                "value": "1.0",
+                "is_argument": "false",
+            },
+            {
+                "name": "threshold",
+                "type": "float",
+                "value": "3.0",
+                "is_argument": "false",
+            },
+            {
+                "name": "threshold",
+                "type": "float",
+                "value": "5.0",
+                "is_argument": "false",
+            },
             {"name": "lam", "type": "float", "value": "0.1", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.2", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.3", "is_argument": "false"},
             {"name": "lam", "type": "float", "value": "0.4", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.5", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.6", "is_argument": "false"},
-            {"name": "lam", "type": "float", "value": "0.7", "is_argument": "false"},
             {"name": "lam", "type": "float", "value": "0.8", "is_argument": "false"},
         ],
-    }
+    },
+    "SNIPPET_STOCHASTIC": {
+        "id": "1",
+        "className": "StochasticClassifier",
+        "attributes": [{"name": "prob", "type": "float", "value": "0.18", "is_argument": "false"}],
+    },
 }
 
 document_decision_makers = {
@@ -322,34 +273,50 @@ document_decision_makers = {
         "id": "0",
         "className": "TopicBasedLMTextClassifier",
         "attributes": [
-            {"name": "clean", "type": "boolean", "value": "true", "is_argument": "true"},
-            {"name": "stopword_file", "type": "string", "value": f"{STOPWORD_FILE_PATH}", "is_argument": "true"},
-            {"name": "updating", "type": "boolean", "value": "true", "is_argument": "false"},
-            {"name": "update_method", "type": "integer", "value": "1", "is_argument": "false"},
+            {
+                "name": "clean",
+                "type": "boolean",
+                "value": "true",
+                "is_argument": "true",
+            },
+            {
+                "name": "stopword_file",
+                "type": "string",
+                "value": f"{STOPWORD_FILE_PATH}",
+                "is_argument": "true",
+            },
+            {
+                "name": "updating",
+                "type": "boolean",
+                "value": "true",
+                "is_argument": "false",
+            },
+            {
+                "name": "update_method",
+                "type": "integer",
+                "value": "1",
+                "is_argument": "false",
+            },
             {
                 "name": "background_file",
                 "type": "string",
                 "value": f"{BACKGROUND_MODEL_FILE_PATH}",
                 "is_argument": "true",
             },
-            {"name": "full_background", "type": "boolean", "value": "1", "is_argument": "false"},
-            # {"name": "full_background", "type": "boolean", "value": "0", "is_argument": "false"},
-            {"name": "threshold", "type": "float", "value": "0.0", "is_argument": "false"},
-            # {"name": "threshold", "type": "float", "value": "0.1", "is_argument": "false"},
-            # {"name": "threshold", "type": "float", "value": "0.2", "is_argument": "false"},
-            # {"name": "threshold", "type": "float", "value": "0.3", "is_argument": "false"},
-            # {"name": "threshold", "type": "float", "value": "0.4", "is_argument": "false"},
-            # {"name": "threshold", "type": "float", "value": "0.5", "is_argument": "false"},
-            # {"name": "threshold", "type": "float", "value": "0.6", "is_argument": "false"},
-            # {"name": "threshold", "type": "float", "value": "0.7", "is_argument": "false"},
+            {
+                "name": "full_background",
+                "type": "boolean",
+                "value": "1",
+                "is_argument": "false",
+            },
+            {
+                "name": "threshold",
+                "type": "float",
+                "value": "0.0",
+                "is_argument": "false",
+            },
             {"name": "lam", "type": "float", "value": "0.1", "is_argument": "false"},
             {"name": "lam", "type": "float", "value": "0.2", "is_argument": "false"},
-            # {"name": "lam", "type": "float", "value": "0.3", "is_argument": "false"},
-            # {"name": "lam", "type": "float", "value": "0.4", "is_argument": "false"},
-            # {"name": "lam", "type": "float", "value": "0.5", "is_argument": "false"},
-            # {"name": "lam", "type": "float", "value": "0.6", "is_argument": "false"},
-            # {"name": "lam", "type": "float", "value": "0.7", "is_argument": "false"},
-            # {"name": "lam", "type": "float", "value": "0.8", "is_argument": "false"},
         ],
     },
 }
@@ -482,7 +449,9 @@ def generate_identifier(expanded_entry, is_path=True):
 
             if is_path:
                 identifier_string = os.path.join(
-                    f"{identifier_string}", f"{level_type}{level_id}", f"vars-{attributes_string}"
+                    f"{identifier_string}",
+                    f"{level_type}{level_id}",
+                    f"vars-{attributes_string}",
                 )
             else:
                 identifier_string = f"{identifier_string}{level_type}{level_id}-{attributes_string}_"
@@ -548,9 +517,9 @@ def generate_attributes_xml_string(attributes):
     return attributes_string
 
 
-def generate_simulation_files(all_combinations, expanded_entry, output_dir, experiment_base_dir, write=True):
-    base_path = generate_identifier(expanded_entry, is_path=True)
-    identifier = generate_identifier(expanded_entry, is_path=False)
+def generate_simulation_files(all_combinations, expanded_entry, output_dir, experiment_base_dir, run_id, write=True):
+    base_path = f"run_{run_id}_" + generate_identifier(expanded_entry, is_path=True)
+    identifier = f"run_{run_id}_" + generate_identifier(expanded_entry, is_path=False)
 
     absolute_output_path = os.path.join(output_dir, base_path)
     absolute_experiment_output_path = os.path.join(experiment_base_dir, base_path, "output")
@@ -581,19 +550,24 @@ def generate_simulation_files(all_combinations, expanded_entry, output_dir, expe
         query = get_expanded_entry_level(expanded_entry, "q")
 
         user_file = user_file.replace(
-            "{queryGeneratorClass}", get_configuration_data(querying_strategies, query["component_id"])["className"]
+            "{queryGeneratorClass}",
+            get_configuration_data(querying_strategies, query["component_id"])["className"],
         )
-        user_file = user_file.replace("{queryGeneratorAttributes}", generate_attributes_xml_string(query["attributes"]))
+        user_file = user_file.replace(
+            "{queryGeneratorAttributes}",
+            generate_attributes_xml_string(query["attributes"]),
+        )
 
         # Snippet Decision Maker
         snip = get_expanded_entry_level(expanded_entry, "sn")
 
         user_file = user_file.replace(
             "{snippetClassifierClass}",
-            get_configuration_data(document_decision_makers, snip["component_id"])["className"],
+            get_configuration_data(snippet_decision_makers, snip["component_id"])["className"],
         )
         user_file = user_file.replace(
-            "{snippetClassifierAttributes}", generate_attributes_xml_string(snip["attributes"])
+            "{snippetClassifierAttributes}",
+            generate_attributes_xml_string(snip["attributes"]),
         )
 
         # Document Decision Maker
@@ -604,14 +578,16 @@ def generate_simulation_files(all_combinations, expanded_entry, output_dir, expe
             get_configuration_data(document_decision_makers, doc["component_id"])["className"],
         )
         user_file = user_file.replace(
-            "{documentClassifierAttributes}", generate_attributes_xml_string(doc["attributes"])
+            "{documentClassifierAttributes}",
+            generate_attributes_xml_string(doc["attributes"]),
         )
 
         # Stopping Strategy
         stop = get_expanded_entry_level(expanded_entry, "ss")
 
         user_file = user_file.replace(
-            "{stoppingClass}", get_configuration_data(stopping_strategies, stop["component_id"])["className"]
+            "{stoppingClass}",
+            get_configuration_data(stopping_strategies, stop["component_id"])["className"],
         )
         user_file = user_file.replace("{stoppingAttributes}", generate_attributes_xml_string(stop["attributes"]))
 
@@ -619,7 +595,8 @@ def generate_simulation_files(all_combinations, expanded_entry, output_dir, expe
         sub = get_expanded_entry_level(expanded_entry, "sub")
 
         user_file = user_file.replace(
-            "{subtopicClass}", get_configuration_data(subtopic_strategies, sub["component_id"])["className"]
+            "{subtopicClass}",
+            get_configuration_data(subtopic_strategies, sub["component_id"])["className"],
         )
         user_file = user_file.replace("{subtopicAttributes}", generate_attributes_xml_string(sub["attributes"]))
 
@@ -627,7 +604,8 @@ def generate_simulation_files(all_combinations, expanded_entry, output_dir, expe
         serp = get_expanded_entry_level(expanded_entry, "se")
 
         user_file = user_file.replace(
-            "{serpClass}", get_configuration_data(serp_impressions, serp["component_id"])["className"]
+            "{serpClass}",
+            get_configuration_data(serp_impressions, serp["component_id"])["className"],
         )
         user_file = user_file.replace("{serpAttributes}", generate_attributes_xml_string(serp["attributes"]))
 
@@ -643,7 +621,8 @@ def generate_simulation_files(all_combinations, expanded_entry, output_dir, expe
         simulation_file = simulation_file.replace("{outputPath}", absolute_experiment_output_path)
         simulation_file = simulation_file.replace("{bing_key}", BING_KEY)
         simulation_file = simulation_file.replace(
-            "{users}", f'<user configurationFile="{os.path.join(absolute_output_path, "user.xml")}" />'
+            "{users}",
+            f'<user configurationFile="{os.path.join(absolute_output_path, "user.xml")}" />',
         )
 
         topic_str = ""
@@ -710,45 +689,53 @@ def main(output_dir, experiment_base_dir, write=True):
     helper_json = {}
     sim_list = []
     count = 0
+    n_runs = 10
+    for i in range(n_runs):
+        for combination in component_combinations:
+            expanded = expand_combination(all_combinations, combination)
 
-    for combination in component_combinations:
-        expanded = expand_combination(all_combinations, combination)
+            for expanded_entry in expanded:
+                sim_list.append(
+                    generate_simulation_files(
+                        all_combinations,
+                        expanded_entry,
+                        output_dir,
+                        experiment_base_dir,
+                        i,
+                        write,
+                    )
+                )
 
-        for expanded_entry in expanded:
-            sim_list.append(
-                generate_simulation_files(all_combinations, expanded_entry, output_dir, experiment_base_dir, write)
-            )
+                # Append to helper file.
+                base_path = f"run_{i}_{generate_identifier(expanded_entry, is_path=True)}"
+                absolute_output_path = os.path.join(output_dir, base_path)
+                helper_json[os.path.join(absolute_output_path, "simulation.xml")] = expanded_entry
 
-            # Append to helper file.
-            base_path = generate_identifier(expanded_entry, is_path=True)
-            absolute_output_path = os.path.join(output_dir, base_path)
-            helper_json[os.path.join(absolute_output_path, "simulation.xml")] = expanded_entry
+                count += 1
 
-            count += 1
+        if write:
+            with open(os.path.join(output_dir, "helper.json"), "w") as helper_output:
+                helper_output.write(json.dumps(helper_json))
 
-    if write:
-        with open(os.path.join(output_dir, "helper.json"), "w") as helper_output:
-            helper_output.write(json.dumps(helper_json))
+            with open(os.path.join(output_dir, "config.json"), "w") as config_output:
+                config = {
+                    "TIME_LIMIT": TIME_LIMIT,
+                    "STOPWORD_FILE_PATH": STOPWORD_FILE_PATH,
+                    "BACKGROUND_MODEL_FILE_PATH": BACKGROUND_MODEL_FILE_PATH,
+                    "shorthands": shorthands,
+                    "costs": costs,
+                    "logger": logger,
+                    "topics": topics,
+                    "subtopic_strategies": subtopic_strategies,
+                    "querying_strategies": querying_strategies,
+                    "stopping_strategies": stopping_strategies,
+                    "serp_impressions": serp_impressions,
+                    "snippet_decision_makers": snippet_decision_makers,
+                    "document_decision_makers": document_decision_makers,
+                    "ordering": ordering,
+                }
 
-        with open(os.path.join(output_dir, "config.json"), "w") as config_output:
-            config = {
-                "TIME_LIMIT": TIME_LIMIT,
-                "STOPWORD_FILE_PATH": STOPWORD_FILE_PATH,
-                "BACKGROUND_MODEL_FILE_PATH": BACKGROUND_MODEL_FILE_PATH,
-                "shorthands": shorthands,
-                "costs": costs,
-                "logger": logger,
-                "topics": topics,
-                "subtopic_strategies": subtopic_strategies,
-                "querying_strategies": querying_strategies,
-                "stopping_strategies": stopping_strategies,
-                "serp_impressions": serp_impressions,
-                "snippet_decision_makers": snippet_decision_makers,
-                "document_decision_makers": document_decision_makers,
-                "ordering": ordering,
-            }
-
-            config_output.write(json.dumps(config))
+                config_output.write(json.dumps(config))
 
     print(f"Created {count} simulation configurations.")
 

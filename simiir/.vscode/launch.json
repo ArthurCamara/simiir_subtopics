@@ -19,7 +19,7 @@
             "console": "integratedTerminal",
             "program": "run_simiir.py",
             "args": [
-                "/ssd2/arthur/SALmulation/simulation_data/sub1/vars-l100/q13/ss1/se0/sn0/vars-t01l03/doc0/vars-l01/simulation.xml",
+                "/ssd2/arthur/SALmulation/simulation_data/sub4/vars-l100/q13/ss1/se0/sn0/vars-t07l08/doc0/vars-l01/simulation.xml",
             ]
         }
     ]

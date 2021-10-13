@@ -19,16 +19,12 @@ def main(config_filename, mock=False):
 
     # For each combination of the iterables (i.e. each user type vs topic)
     for configuration in config_reader:
-        # Check for output file
-        # log_file = configuration.base_id + ".log"
-        # log_file = os.path.join(configuration.output._OutputController__base_directory, log_file)
         start_time = time.time()
-        print(start_time)
         user = SimulatedUser(configuration)  # Load user
-        progress = ProgressIndicator(configuration)
+        # progress = ProgressIndicator(configuration)
 
         while not configuration.user.logger.is_finished():
-            progress.update()  # Update the progress indicator in the terminal.
+            # progress.update()  # Update the progress indicator in the terminal.
             user.decide_action()
 
         configuration.output.display_report()

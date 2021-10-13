@@ -12,14 +12,28 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "run_simiir",
+            "name": "generator",
             "type": "python",
             "request": "launch",
-            "program": "run_simiir.py",
-            "cwd": "/ssd2/arthur/simiir/simiir",
+            "program": "generator.py",
+            "cwd": "/ssd2/arthur/simmir_py2/simiir/helper_scripts",
             "args": [
-                "../example_sims/trec_bm25_simulation.xml",
-                "--mockup"
+                "/ssd2/arthur/SALmulation/simulation_data_new",
+                "/ssd2/arthur/SALmulation/simulation_data_new"
+            ],
+        },
+        {
+            "name": "runner",
+            "type": "python",
+            "request": "launch",
+            "program": "run_experiments.py",
+            "cwd": "/ssd2/arthur/simmir_py2/simiir/helper_scripts",
+            "args": [
+                "/ssd2/arthur/simmir_py2/simiir/simiir",
+                "/ssd2/arthur/SALmulation/simulation_data_new/list",
+                "/ssd2/arthur/SALmulation/stdout.out",
+                "/ssd2/arthur/SALmulation/stderr.out",
+                "1"
             ],
         }
     ]
